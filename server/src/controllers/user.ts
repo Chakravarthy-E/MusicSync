@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 import { CreateUser, VerifyEmailRequest } from "#/@types/user";
 import User from "#/models/user";
 import { generateToken } from "#/utils/helper";
@@ -11,10 +12,9 @@ import {
 import EmailVerificationToken from "#/models/emailVerificationToken";
 import PasswordResetToken from "#/models/passwordResetToken";
 import { isValidObjectId } from "mongoose";
-import { PASSWORD_RESET_LINK } from "#/utils/variables";
+import { JWT_SECRET, PASSWORD_RESET_LINK } from "#/utils/variables";
 
-//==> Create User
-
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export const create: RequestHandler = async (req: CreateUser, res) => {
   const { email, password, name } = req.body;
   const user = await User.create({ name, email, password });
@@ -30,7 +30,7 @@ export const create: RequestHandler = async (req: CreateUser, res) => {
   res.status(201).json({ user: { id: user._id, email } });
 };
 
-//==> Verify Email
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export const verifyEmail: RequestHandler = async (
   req: VerifyEmailRequest,
   res
@@ -60,7 +60,7 @@ export const verifyEmail: RequestHandler = async (
   return res.json({ message: "Your email is verified" });
 };
 
-// Resend Verification token
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export const sendVerificationToken: RequestHandler = async (req, res) => {
   const { userId } = req.body;
 
@@ -94,8 +94,7 @@ export const sendVerificationToken: RequestHandler = async (req, res) => {
   res.json({ message: "Please check your mail!" });
 };
 
-//==> Forget password
-
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export const generateForgetPassword: RequestHandler = async (req, res) => {
   const { email } = req.body;
 
@@ -119,7 +118,7 @@ export const generateForgetPassword: RequestHandler = async (req, res) => {
   sendForgetPasswordLink({ email: user.email, link: resetLink });
   res.json({ message: "Check your registered mail." });
 };
-
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export const isValidPassResetToken: RequestHandler = async (req, res) => {
   const { token, userId } = req.body;
 
@@ -143,7 +142,7 @@ export const isValidPassResetToken: RequestHandler = async (req, res) => {
 export const grantValid: RequestHandler = async (req, res) => {
   res.json({ valid: true });
 };
-
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export const updatePassword: RequestHandler = async (req, res) => {
   const { password, userId } = req.body;
 
@@ -157,9 +156,36 @@ export const updatePassword: RequestHandler = async (req, res) => {
 
   user.password = password;
   await user.save();
-
   await PasswordResetToken.findOneAndDelete({ owner: user._id });
-
   sendPassResetSuccessEmail(user.name, user.email);
   res.json({ message: "Password Reset Succssfully!" });
+};
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+export const SignIn: RequestHandler = async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) return res.status(403).json({ error: "Email/Password mismatch!" });
+
+  const matched = await user.comparePassword(password);
+  if (!matched)
+    return res.status(403).json({ error: "Email/Password mismatch!" });
+
+  const token = jwt.sign({ userId: user._id }, JWT_SECRET);
+
+  user.tokens.push(token);
+
+  await user.save();
+
+  res.json({
+    profile: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      verified: user.verified,
+      avatar: user.avatar?.url,
+      followers: user.followers.length,
+      followings: user.followings.length,
+    },
+    token,
+  });
 };
