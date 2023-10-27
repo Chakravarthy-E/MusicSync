@@ -5,7 +5,6 @@ import {
   MAILTRAP_USER,
   VERIFICATION_EMAIL,
 } from "#/utils/variables";
-import emailVerificationToken from "#/models/emailVerificationToken";
 import { generateTemplate } from "#/mail/templete";
 
 const generateMailTransporter = () => {
@@ -31,11 +30,6 @@ export const sendVerificationMail = async (token: string, profile: Profile) => {
   const transport = generateMailTransporter();
 
   const { name, email, userId } = profile;
-  await emailVerificationToken.create({
-    owner: userId,
-    token,
-  });
-
   const welocomeMessage = `Hi ${name} Welcome to MusicSync! There are so much thing that we do for verified users.Use the given OTP to verify your email`;
 
   transport.sendMail({
