@@ -33,7 +33,6 @@ export const TokenAndIDValidation = yup.object().shape({
     .required("Invalid userId"),
 });
 
-
 export const UpdatePasswordSchema = yup.object().shape({
   token: yup.string().trim().required("Invalid token!"),
   userId: yup
@@ -45,7 +44,7 @@ export const UpdatePasswordSchema = yup.object().shape({
       return "";
     })
     .required("Invalid userId"),
-    password: yup
+  password: yup
     .string()
     .trim()
     .required("Password is missing")
@@ -56,4 +55,7 @@ export const UpdatePasswordSchema = yup.object().shape({
     ),
 });
 
-
+export const SignInValidationSchema = yup.object().shape({
+  email: yup.string().required("Email is missing").email("Invalid email id!"),
+  password: yup.string().trim().required("Password is missing"),
+});
