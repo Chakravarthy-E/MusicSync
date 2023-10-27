@@ -1,12 +1,20 @@
 import { RequestHandler } from "express";
+import crypto from "crypto";
 import { CreateUser, VerifyEmailRequest } from "#/@types/user";
 import User from "#/models/user";
 import { generateToken } from "#/utils/helper";
-import { sendVerificationMail } from "#/utils/mail";
+import {
+  sendForgetPasswordLink,
+  sendPassResetSuccessEmail,
+  sendVerificationMail,
+} from "#/utils/mail";
 import EmailVerificationToken from "#/models/emailVerificationToken";
+import PasswordResetToken from "#/models/passwordResetToken";
 import { isValidObjectId } from "mongoose";
+import { PASSWORD_RESET_LINK } from "#/utils/variables";
 
 //==> Create User
+
 export const create: RequestHandler = async (req: CreateUser, res) => {
   const { email, password, name } = req.body;
   const user = await User.create({ name, email, password });
@@ -95,5 +103,63 @@ export const generateForgetPassword: RequestHandler = async (req, res) => {
 
   if (!user) return res.status(404).json({ error: "Account not found" });
 
-  res.json({ message: "Please check your mail!" });
+  await PasswordResetToken.findOneAndDelete({
+    owner: user._id,
+  });
+
+  const token = crypto.randomBytes(36).toString("hex");
+
+  await PasswordResetToken.create({
+    owner: user._id,
+    token,
+  });
+
+  const resetLink = `${PASSWORD_RESET_LINK}?token=${token}&userId=${user._id}`;
+
+  sendForgetPasswordLink({ email: user.email, link: resetLink });
+  res.json({ message: "Check your registered mail." });
+};
+
+export const isValidPassResetToken: RequestHandler = async (req, res) => {
+  const { token, userId } = req.body;
+
+  const resetToken = await PasswordResetToken.findOne({
+    owner: userId,
+  });
+
+  if (!resetToken)
+    return res
+      .status(403)
+      .json({ error: "Unauthorized access, invalid token" });
+  const matched = await resetToken.compareToken(token);
+
+  if (!matched)
+    return res
+      .status(403)
+      .json({ error: "Unauthorized access, invalid token" });
+
+  res.json({ message: "Your token is valid" });
+};
+export const grantValid: RequestHandler = async (req, res) => {
+  res.json({ valid: true });
+};
+
+export const updatePassword: RequestHandler = async (req, res) => {
+  const { password, userId } = req.body;
+
+  const user = await User.findById(userId);
+  if (!user) return res.status(403).json({ error: "unauthorize access" });
+  const matched = await user.comparePassword(password);
+  if (matched)
+    return res
+      .status(422)
+      .json({ error: "The new password much be different" });
+
+  user.password = password;
+  await user.save();
+
+  await PasswordResetToken.findOneAndDelete({ owner: user._id });
+
+  sendPassResetSuccessEmail(user.name, user.email);
+  res.json({ message: "Password Reset Succssfully!" });
 };
