@@ -14,7 +14,6 @@ export interface VerifyEmailRequest extends Request {
   };
 }
 
-
 declare global {
   namespace Express {
     interface Request {
@@ -27,6 +26,7 @@ declare global {
         followers: number;
         followings: number;
       };
+      token: string;
     }
   }
 }
