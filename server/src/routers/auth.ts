@@ -26,7 +26,7 @@ import { RequestWithFiles, fileParser } from "#/middleware/fileParser";
 const router = Router();
 
 router.post("/create", validate(CreateUserSchema), create);
-router.post("/verify-email", validate(UpdatePasswordSchema), verifyEmail);
+router.post("/verify-email", validate(TokenAndIDValidation), verifyEmail);
 router.post("/re-verify-email", sendVerificationToken);
 router.post("/forget-password", generateForgetPassword);
 router.post(
@@ -61,6 +61,6 @@ router.get("/private", mustAuth, (req, res) => {
 
 router.post("/update-profile", mustAuth, fileParser, updateProfile);
 
-router.post("/log-out",mustAuth,logOut)
+router.post("/log-out", mustAuth, logOut);
 
 export default router;
