@@ -4,8 +4,6 @@ import { verify, JwtPayload } from "jsonwebtoken";
 import { JWT_SECRET } from "#/utils/variables";
 import User from "#/models/user";
 
-
-
 export const isValidPassResetToken: RequestHandler = async (req, res, next) => {
   const { token, userId } = req.body;
 
@@ -48,6 +46,12 @@ export const mustAuth: RequestHandler = async (req, res, next) => {
     followers: user.followers.length,
     followings: user.followings.length,
   }),
-    req.token = token,
+    (req.token = token),
     next();
+};
+
+export const isVerified: RequestHandler = (req, res, next) => {
+  if (!req.user.verified)
+    return res.status(422).json({ error: "Please verify your email account!" });
+  next()
 };
