@@ -1,5 +1,4 @@
 import { categories, categoriesTypes } from "#/utils/audio_category";
-import { timeStamp } from "console";
 import { Model, ObjectId, models, Schema, model } from "mongoose";
 
 export interface AudioDocument<T = ObjectId> {
