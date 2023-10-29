@@ -2,10 +2,11 @@ import { categories, categoriesTypes } from "#/utils/audio_category";
 import { timeStamp } from "console";
 import { Model, ObjectId, models, Schema, model } from "mongoose";
 
-export interface AudioDocument {
+export interface AudioDocument<T = ObjectId> {
+  _id: ObjectId;
   title: string;
   about: string;
-  owner: ObjectId;
+  owner: T;
   file: {
     url: string;
     publicId: string;
