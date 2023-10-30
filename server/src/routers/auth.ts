@@ -9,7 +9,7 @@ import {
 
 import { validate } from "#/middleware/validator";
 import {
-  SignIn,
+  signIn,
   create,
   generateForgetPassword,
   grantValid,
@@ -21,7 +21,7 @@ import {
   verifyEmail,
 } from "#/controllers/auth";
 import { isValidPassResetToken, mustAuth } from "#/middleware/auth";
-import { RequestWithFiles, fileParser } from "#/middleware/fileParser";
+import { fileParser } from "#/middleware/fileParser";
 
 const router = Router();
 
@@ -43,7 +43,7 @@ router.post(
   updatePassword
 );
 
-router.post("/sign-in", validate(SignInValidationSchema), SignIn);
+router.post("/sign-in", validate(SignInValidationSchema), signIn);
 
 router.get("/is-auth", mustAuth, sendProfile);
 

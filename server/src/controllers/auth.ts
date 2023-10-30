@@ -20,6 +20,12 @@ import formidable from "formidable";
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export const create: RequestHandler = async (req: CreateUser, res) => {
   const { email, password, name } = req.body;
+
+  const oldUser = await User.find({ email });
+  if (oldUser)
+    return res.status(403).json({ error: "email is already in use" });
+
+    
   const user = await User.create({ name, email, password });
 
   const token = generateToken();
@@ -76,6 +82,11 @@ export const sendVerificationToken: RequestHandler = async (req, res) => {
   if (!user) {
     return res.status(403).json({ message: "Invalid request" });
   }
+
+  if (user.verified)
+    return res
+      .status(422)
+      .json({ message: "Ypur account is already verified" });
 
   await EmailVerificationToken.findOneAndDelete({
     owner: userId,
@@ -164,7 +175,7 @@ export const updatePassword: RequestHandler = async (req, res) => {
   res.json({ message: "Password Reset Succssfully!" });
 };
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-export const SignIn: RequestHandler = async (req, res) => {
+export const signIn: RequestHandler = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) return res.status(403).json({ error: "Email/Password mismatch!" });
