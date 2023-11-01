@@ -1,30 +1,52 @@
+import AuthInputField from '@components/AuthInputField';
 import colors from '@utils/colors';
-import React, {FC} from 'react';
-import {View, SafeAreaView, TextInput, StyleSheet, Text} from 'react-native';
+import React, {FC, useState} from 'react';
+import {View, SafeAreaView, StyleSheet, Button} from 'react-native';
 
 interface Props {}
 
 const SignUp: FC<Props> = props => {
+  const [userInfo, setuserInfo] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.formContainer}>
-        <Text style={styles.label}>Name</Text>
-        <TextInput
-          placeholder="John"
-          placeholderTextColor={colors.INACTIVE_CONSTRAST}
-          style={styles.input}
+        <AuthInputField
+          placeholder="John Doe"
+          label="Name"
+          containerStyle={styles.marginBottom}
+          onChange={text => {
+            setuserInfo({...userInfo, name: text});
+          }}
         />
-        <Text style={styles.label}>Email</Text>
-        <TextInput
+        <AuthInputField
           placeholder="john@gmail.com"
-          placeholderTextColor={colors.INACTIVE_CONSTRAST}
-          style={styles.input}
+          label="Email"
+          keyboardType="email-address"
+          containerStyle={styles.marginBottom}
+          onChange={text => {
+            setuserInfo({...userInfo, email: text});
+          }}
         />
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          placeholder="**********"
-          placeholderTextColor={colors.INACTIVE_CONSTRAST}
-          style={styles.input}
+        <AuthInputField
+          placeholder="*********"
+          label="Password"
+          autoCapitalize="none"
+          secureTextEntry
+          containerStyle={styles.marginBottom}
+          onChange={text => {
+            setuserInfo({...userInfo, password: text});
+          }}
+        />
+        <Button
+          title="Sing up"
+          onPress={() => {
+            console.log(userInfo);
+          }}
         />
       </View>
     </SafeAreaView>
@@ -38,20 +60,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  input: {
-    borderWidth: 2,
-    borderColor: colors.SECONDARY,
-    height: 45,
-    borderRadius: 25,
-    color: colors.CONSTRAST,
-    padding: 10,
-  },
-  label: {
-    color: colors.CONSTRAST,
-  },
   formContainer: {
     width: '100%',
     paddingHorizontal: 15,
+  },
+  marginBottom: {
+    marginBottom: 20,
   },
 });
 
