@@ -1,54 +1,78 @@
-import AuthInputField from '@components/AuthInputField';
-import colors from '@utils/colors';
-import React, {FC, useState} from 'react';
+import React, {FC} from 'react';
+import * as yup from 'yup';
 import {View, SafeAreaView, StyleSheet, Button} from 'react-native';
+import colors from '@utils/colors';
+import AuthInputField from '@components/form/AuthInputField';
+import Form from '@components/form';
+import SubmitBtn from '@components/form/SubmitBtn';
+import Icon from 'react-native-vector-icons/Entypo';
+
+const signupSchema = yup.object({
+  name: yup
+    .string()
+    .trim('Name is missing')
+    .min(3, 'Invalid name')
+    .required('Name is required'),
+  email: yup
+    .string()
+    .trim('Name is missing')
+    .email('Invalid email')
+    .required('Email is required'),
+  password: yup
+    .string()
+    .trim('Password is missing')
+    .min(8, 'Password is too short')
+    .matches(
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
+      'Password is too simple!',
+    )
+    .required('Password is required'),
+});
 
 interface Props {}
 
-const SignUp: FC<Props> = props => {
-  const [userInfo, setuserInfo] = useState({
-    name: '',
-    email: '',
-    password: '',
-  });
+const initialValues = {
+  name: '',
+  email: '',
+  password: '',
+};
 
+const SignUp: FC<Props> = props => {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.formContainer}>
-        <AuthInputField
-          placeholder="John Doe"
-          label="Name"
-          containerStyle={styles.marginBottom}
-          onChange={text => {
-            setuserInfo({...userInfo, name: text});
-          }}
-        />
-        <AuthInputField
-          placeholder="john@gmail.com"
-          label="Email"
-          keyboardType="email-address"
-          containerStyle={styles.marginBottom}
-          onChange={text => {
-            setuserInfo({...userInfo, email: text});
-          }}
-        />
-        <AuthInputField
-          placeholder="*********"
-          label="Password"
-          autoCapitalize="none"
-          secureTextEntry
-          containerStyle={styles.marginBottom}
-          onChange={text => {
-            setuserInfo({...userInfo, password: text});
-          }}
-        />
-        <Button
-          title="Sing up"
-          onPress={() => {
-            console.log(userInfo);
-          }}
-        />
-      </View>
+      <Form
+        onSubmit={values => {
+          console.log(values);
+        }}
+        initialValues={initialValues}
+        validationSchema={signupSchema}>
+        <View style={styles.formContainer}>
+          <AuthInputField
+            name="name"
+            placeholder="John Doe"
+            label="Name"
+            containerStyle={styles.marginBottom}
+          />
+          <AuthInputField
+            name="email"
+            placeholder="john@gmail.com"
+            label="Email"
+            keyboardType="email-address"
+            containerStyle={styles.marginBottom}
+          />
+          <AuthInputField
+            name="password"
+            placeholder="*********"
+            label="Password"
+            autoCapitalize="none"
+            secureTextEntry
+            containerStyle={styles.marginBottom}
+            rightIcon={<Icon name="eye" color="white" size={18} />}
+            onRightIconPress
+          />
+          <SubmitBtn title="Sign up" />
+        </View>
+      </Form>
     </SafeAreaView>
   );
 };
@@ -65,7 +89,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   marginBottom: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
 });
 
