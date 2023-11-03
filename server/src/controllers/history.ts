@@ -1,4 +1,4 @@
-import { pagenationQuery } from "#/@types/misc";
+import { paginationQuery } from "#/@types/misc";
 import History, { historyType } from "#/models/history";
 import { RequestHandler } from "express";
 
@@ -15,7 +15,6 @@ export const updateHistory: RequestHandler = async (req, res) => {
       last: history,
       all: [history],
     });
-
     return res.json({ success: true });
   }
 
@@ -30,6 +29,7 @@ export const updateHistory: RequestHandler = async (req, res) => {
     today.getMonth(),
     today.getDate() + 1
   );
+
   const histories = await History.aggregate([
     { $match: { owner: req.user.id } },
     { $unwind: "$all" },
@@ -44,14 +44,17 @@ export const updateHistory: RequestHandler = async (req, res) => {
     {
       $project: {
         _id: 0,
-        audio: "$all.audio",
+        audioId: "$all.audio",
       },
     },
   ]);
 
-  const sameDayHistory = histories.find((item) => {
-    if (item.audio.toString() === audio) return item;
-  });
+  // const sameDayHistory = histories.find((item) => {
+  //   if (item.audio.toString() === audio) return item;
+  // });
+  const sameDayHistory = histories.find(
+    ({ audioId }) => audioId.toString() === audio
+  );
 
   if (sameDayHistory) {
     await History.findOneAndUpdate(
@@ -62,7 +65,7 @@ export const updateHistory: RequestHandler = async (req, res) => {
       {
         $set: {
           "all.$.progress": progress,
-          "all.$,date": date,
+          "all.$.date": date,
         },
       }
     );
@@ -75,31 +78,30 @@ export const updateHistory: RequestHandler = async (req, res) => {
 
   res.json({ success: true });
 };
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 export const removeHistory: RequestHandler = async (req, res) => {
   const removeAll = req.query.all === "yes";
+
   if (removeAll) {
+    // remove all the history
     await History.findOneAndDelete({ owner: req.user.id });
     return res.json({ success: true });
   }
 
   const histories = req.query.histories as string;
-
   const ids = JSON.parse(histories) as string[];
-
   await History.findOneAndUpdate(
     { owner: req.user.id },
     {
       $pull: { all: { _id: ids } },
     }
   );
+
   res.json({ success: true });
 };
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export const getHistories: RequestHandler = async (req, res) => {
-  const { limit = "20", pageNo = "0" } = req.query as pagenationQuery;
-
+  const { limit = "20", pageNo = "0" } = req.query as paginationQuery;
   const histories = await History.aggregate([
     { $match: { owner: req.user.id } },
     {
@@ -144,16 +146,14 @@ export const getHistories: RequestHandler = async (req, res) => {
         audios: "$$ROOT.audios",
       },
     },
-    {
-      $sort: { date: -1 },
-    },
+    { $sort: { date: -1 } },
   ]);
+
   res.json({ histories });
 };
 
 export const getRecentlyPlayed: RequestHandler = async (req, res) => {
   const match = { $match: { owner: req.user.id } };
-
   const sliceMatch = {
     $project: {
       myHistory: { $slice: ["$all", 10] },
@@ -188,8 +188,6 @@ export const getRecentlyPlayed: RequestHandler = async (req, res) => {
     $unwind: "$audioInfo",
   };
 
-  const unwindUser = { $unwind: "$owner" };
-
   const userLookup = {
     $lookup: {
       from: "users",
@@ -199,17 +197,19 @@ export const getRecentlyPlayed: RequestHandler = async (req, res) => {
     },
   };
 
+  const unwindUser = { $unwind: "$owner" };
+
   const projectResult = {
     $project: {
       _id: 0,
-      id: "audioInfo._id",
+      id: "$audioInfo._id",
       title: "$audioInfo.title",
-      about: "$audioInfo.info",
-      poster: "$audioInfo.poster.url",
+      about: "$audioInfo.about",
       file: "$audioInfo.file.url",
+      poster: "$audioInfo.poster.url",
       category: "$audioInfo.category.url",
       owner: { name: "$owner.name", id: "$owner._id" },
-      date: "histories.date",
+      date: "$histories.date",
       progress: "$histories.progress",
     },
   };

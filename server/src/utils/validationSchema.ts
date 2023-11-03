@@ -6,15 +6,15 @@ export const CreateUserSchema = yup.object().shape({
   name: yup
     .string()
     .trim()
-    .required("Name is missing")
+    .required("Name is missing!")
     .min(3, "Name is too short!")
-    .max(23, "Name is too long!"),
-  email: yup.string().required("Email is missing").email("Invalid email id!"),
+    .max(20, "Name is too long!"),
+  email: yup.string().required("Email is missing!").email("Invalid email id!"),
   password: yup
     .string()
     .trim()
-    .required("Password is missing")
-    .min(8, "Passsword is too short!")
+    .required("Password is missing!")
+    .min(8, "Password is too short!")
     .matches(
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
       "Password is too simple!"
@@ -31,7 +31,7 @@ export const TokenAndIDValidation = yup.object().shape({
       }
       return "";
     })
-    .required("Invalid userId"),
+    .required("Invalid userId!"),
 });
 
 export const UpdatePasswordSchema = yup.object().shape({
@@ -44,12 +44,12 @@ export const UpdatePasswordSchema = yup.object().shape({
       }
       return "";
     })
-    .required("Invalid userId"),
+    .required("Invalid userId!"),
   password: yup
     .string()
     .trim()
-    .required("Password is missing")
-    .min(8, "Passsword is too short!")
+    .required("Password is missing!")
+    .min(8, "Password is too short!")
     .matches(
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
       "Password is too simple!"
@@ -57,49 +57,54 @@ export const UpdatePasswordSchema = yup.object().shape({
 });
 
 export const SignInValidationSchema = yup.object().shape({
-  email: yup.string().required("Email is missing").email("Invalid email id!"),
-  password: yup.string().trim().required("Password is missing"),
+  email: yup.string().required("Email is missing!").email("Invalid email id!"),
+  password: yup.string().trim().required("Password is missing!"),
 });
 
 export const AudioValidationSchema = yup.object().shape({
-  title: yup.string().required("Title is missing"),
-  about: yup.string().required("About is missing"),
+  title: yup.string().required("Title is missing!"),
+  about: yup.string().required("About is missing!"),
   category: yup
     .string()
-    .oneOf(categories, "Invalid category")
-    .required("Category is missing"),
+    .oneOf(categories, "Invalid category!")
+    .required("Category is missing!"),
 });
+
 export const NewPlaylistValidationSchema = yup.object().shape({
-  title: yup.string().required("Title is missing"),
+  title: yup.string().required("Title is missing!"),
   resId: yup.string().transform(function (value) {
     return this.isType(value) && isValidObjectId(value) ? value : "";
   }),
   visibility: yup
     .string()
-    .oneOf(["public", "private"], "Visibility must be public or private")
+    .oneOf(["public", "private"], "Visibility must be public or private!")
     .required("Visibility is missing!"),
 });
+
 export const OldPlaylistValidationSchema = yup.object().shape({
-  title: yup.string().required("Title is missing"),
+  title: yup.string().required("Title is missing!"),
+  // this is going to validate the audio id
   item: yup.string().transform(function (value) {
     return this.isType(value) && isValidObjectId(value) ? value : "";
   }),
+  // this is going to validate the playlist id
   id: yup.string().transform(function (value) {
     return this.isType(value) && isValidObjectId(value) ? value : "";
   }),
   visibility: yup
     .string()
-    .oneOf(["public", "private"], "Visibility must be public or private"),
+    .oneOf(["public", "private"], "Visibility must be public or private!"),
+  // .required("Visibility is missing!"),
 });
+
 export const UpdateHistorySchema = yup.object().shape({
   audio: yup
     .string()
     .transform(function (value) {
       return this.isType(value) && isValidObjectId(value) ? value : "";
     })
-    .required("Invalid audio id"),
-
-  progress: yup.number().required("History progress is missing"),
+    .required("Invalid audio id!"),
+  progress: yup.number().required("History progress is missing!"),
   date: yup
     .string()
     .transform(function (value) {
@@ -107,5 +112,5 @@ export const UpdateHistorySchema = yup.object().shape({
       if (date instanceof Date) return value;
       return "";
     })
-    .required("Invalid date"),
+    .required("Invalid date!"),
 });

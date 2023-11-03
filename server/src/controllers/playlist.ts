@@ -8,8 +8,6 @@ import Playlist from "#/models/playlist";
 import { RequestHandler } from "express";
 import { isValidObjectId } from "mongoose";
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 export const createPlaylist: RequestHandler = async (
   req: CreatePlaylistRequest,
   res
@@ -17,10 +15,14 @@ export const createPlaylist: RequestHandler = async (
   const { title, resId, visibility } = req.body;
   const ownerId = req.user.id;
 
+  // while creating playlist there can be request
+  // or user just want to create an empty playlist.
+
+  // with new playlist name and the audio that user wants to store inside that playlist
   if (resId) {
     const audio = await Audio.findById(resId);
     if (!audio)
-      return res.status(422).json({ error: "Could not found the audio" });
+      return res.status(404).json({ error: "Could not found the audio!" });
   }
 
   const newPlaylist = new Playlist({
@@ -41,7 +43,6 @@ export const createPlaylist: RequestHandler = async (
   });
 };
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export const updatePlaylist: RequestHandler = async (
   req: UpdatePlaylistRequest,
   res
@@ -59,6 +60,9 @@ export const updatePlaylist: RequestHandler = async (
   if (item) {
     const audio = await Audio.findById(item);
     if (!audio) return res.status(404).json({ error: "Audio not found !" });
+    // playlist.items.push(audio._id);
+    // await playlist.save();
+
     await Playlist.findByIdAndUpdate(playlist._id, {
       $addToSet: { items: item },
     });
@@ -73,25 +77,25 @@ export const updatePlaylist: RequestHandler = async (
   });
 };
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 export const removePlaylist: RequestHandler = async (req, res) => {
   const { playlistId, resId, all } = req.query;
 
   if (!isValidObjectId(playlistId))
-    return res.status(422).json({ error: "Invalid playlist" });
+    return res.status(422).json({ error: "Invalid playlist id!" });
 
   if (all === "yes") {
     const playlist = await Playlist.findOneAndDelete({
       _id: playlistId,
       owner: req.user.id,
     });
-    if (!playlist) return res.status(404).json({ error: "Playlist not found" });
+
+    if (!playlist)
+      return res.status(404).json({ error: "Playlist not found!" });
   }
 
   if (resId) {
     if (!isValidObjectId(resId))
-      return res.status(422).json({ error: "Invalid audio id" });
+      return res.status(422).json({ error: "Invalid audio id!" });
 
     const playlist = await Playlist.findOneAndUpdate(
       {
@@ -103,13 +107,13 @@ export const removePlaylist: RequestHandler = async (req, res) => {
       }
     );
 
-    if (!playlist) return res.status(404).json({ error: "Playlist not found" });
+    if (!playlist)
+      return res.status(404).json({ error: "Playlist not found!" });
   }
 
   res.json({ success: true });
 };
 
-//+++++++++++++++++++++++++++++++++Get Play list +++++++++++++++++++++++++++++++++++++
 export const getPlaylistByProfile: RequestHandler = async (req, res) => {
   const { pageNo = "0", limit = "20" } = req.query as {
     pageNo: string;
@@ -128,18 +132,19 @@ export const getPlaylistByProfile: RequestHandler = async (req, res) => {
     return {
       id: item._id,
       title: item.title,
-      itemsCound: item.items.length,
+      itemsCount: item.items.length,
       visibility: item.visibility,
     };
   });
 
   res.json({ playlist });
 };
+
 export const getAudios: RequestHandler = async (req, res) => {
   const { playlistId } = req.params;
 
   if (!isValidObjectId(playlistId))
-    return res.status(422).json({ error: "Invalid playlist id" });
+    return res.status(422).json({ error: "Invalid playlist id!" });
 
   const playlist = await Playlist.findOne({
     owner: req.user.id,
@@ -153,6 +158,7 @@ export const getAudios: RequestHandler = async (req, res) => {
   });
 
   if (!playlist) return res.json({ list: [] });
+
   const audios = playlist.items.map((item) => {
     return {
       id: item._id,
@@ -163,6 +169,7 @@ export const getAudios: RequestHandler = async (req, res) => {
       owner: { name: item.owner.name, id: item.owner._id },
     };
   });
+
   res.json({
     list: {
       id: playlist._id,
