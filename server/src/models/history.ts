@@ -1,4 +1,4 @@
-import { Model, ObjectId, Schema, model, models } from "mongoose";
+import { Model, model, models, ObjectId, Schema } from "mongoose";
 
 export type historyType = { audio: ObjectId; progress: number; date: Date };
 
@@ -37,6 +37,6 @@ const historySchema = new Schema<HistoryDocument>(
   { timestamps: true }
 );
 
-const History = models.Favorite || model("Favorite", historySchema);
+const History = models.History || model("History", historySchema);
 
 export default History as Model<HistoryDocument>;

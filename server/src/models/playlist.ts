@@ -1,13 +1,13 @@
-import { Model, ObjectId, Schema, model, models } from "mongoose";
+import { Model, model, models, ObjectId, Schema } from "mongoose";
 
-interface PlayListDocument {
+interface PlaylistDocument {
   title: string;
   owner: ObjectId;
   items: ObjectId[];
   visibility: "public" | "private" | "auto";
 }
 
-const playlistSchema = new Schema<PlayListDocument>(
+const playlistSchema = new Schema<PlaylistDocument>(
   {
     title: {
       type: String,
@@ -35,4 +35,5 @@ const playlistSchema = new Schema<PlayListDocument>(
 );
 
 const Playlist = models.Playlist || model("Playlist", playlistSchema);
-export default Playlist as Model<PlayListDocument>;
+
+export default Playlist as Model<PlaylistDocument>;

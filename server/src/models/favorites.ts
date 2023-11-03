@@ -1,4 +1,4 @@
-import { Model, ObjectId, Schema, model, models } from "mongoose";
+import { Model, model, models, ObjectId, Schema } from "mongoose";
 
 interface FavoriteDocument {
   owner: ObjectId;
@@ -13,9 +13,7 @@ const favoriteSchema = new Schema<FavoriteDocument>(
     },
     items: [{ type: Schema.Types.ObjectId, ref: "Audio" }],
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 const Favorite = models.Favorite || model("Favorite", favoriteSchema);
