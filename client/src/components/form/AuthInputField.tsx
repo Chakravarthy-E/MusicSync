@@ -2,7 +2,7 @@ import AppInput from '@ui/AppInput';
 import colors from '@utils/colors';
 import {useFormikContext} from 'formik';
 import React, {FC, ReactNode, useEffect} from 'react';
-import Icon from 'react-native-vector-icons/AntDesign';
+
 
 import {
   View,

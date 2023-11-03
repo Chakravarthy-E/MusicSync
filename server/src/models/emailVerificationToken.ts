@@ -1,8 +1,7 @@
-// Interface
-
-import { Model, ObjectId, Schema, model } from "mongoose";
+import { Model, model, ObjectId, Schema } from "mongoose";
 import { hash, compare } from "bcrypt";
 
+// interface (typescript)
 interface EmailVerificationTokenDocument {
   owner: ObjectId;
   token: string;
@@ -12,6 +11,9 @@ interface EmailVerificationTokenDocument {
 interface Methods {
   compareToken(token: string): Promise<boolean>;
 }
+
+// expire them after 1 hrs
+
 const emailVerificationTokenSchema = new Schema<
   EmailVerificationTokenDocument,
   {},
@@ -28,15 +30,17 @@ const emailVerificationTokenSchema = new Schema<
   },
   createdAt: {
     type: Date,
-    expires: 3600, // 60 min * 60 sec = 3600 sec
+    expires: 3600, // 60 min * 60 sec = 3600s
     default: Date.now(),
   },
 });
 
 emailVerificationTokenSchema.pre("save", async function (next) {
+  // hash the token
   if (this.isModified("token")) {
     this.token = await hash(this.token, 10);
   }
+
   next();
 });
 
