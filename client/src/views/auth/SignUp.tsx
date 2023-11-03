@@ -1,10 +1,7 @@
 import React, {FC, useState} from 'react';
+import {useNavigation, NavigationProp} from '@react-navigation/native';
 import * as yup from 'yup';
-import {
-  View,
-  StyleSheet,
- 
-} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 
 import AuthInputField from '@components/form/AuthInputField';
 import Form from '@components/form';
@@ -12,6 +9,7 @@ import SubmitBtn from '@components/form/SubmitBtn';
 import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
 import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
+import {AuthStackParamList} from 'src/@types/navigation';
 
 const signupSchema = yup.object({
   name: yup
@@ -45,6 +43,8 @@ const initialValues = {
 
 const SignUp: FC<Props> = props => {
   const [secureEntry, setSecureEntry] = useState(true);
+
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
   const togglePasswordView = () => {
     setSecureEntry(!secureEntry);
@@ -88,8 +88,18 @@ const SignUp: FC<Props> = props => {
           <SubmitBtn title="Sign up" />
 
           <View style={styles.linkContainer}>
-            {/* <AppLink title="Forgetten Password" /> */}
-            <AppLink title="Sign in" />
+            <AppLink
+              title="Forgetten Password"
+              onPress={() => {
+                navigation.navigate('ForgettenPassword');
+              }}
+            />
+            <AppLink
+              title="Sign in"
+              onPress={() => {
+                navigation.navigate('SignIn');
+              }}
+            />
           </View>
         </View>
       </AuthFormContainer>

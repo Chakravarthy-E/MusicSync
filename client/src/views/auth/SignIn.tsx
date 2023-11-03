@@ -1,5 +1,6 @@
 import React, {FC, useState} from 'react';
 import * as yup from 'yup';
+import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {View, StyleSheet} from 'react-native';
 import AuthInputField from '@components/form/AuthInputField';
 import Form from '@components/form';
@@ -7,6 +8,7 @@ import SubmitBtn from '@components/form/SubmitBtn';
 import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
 import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
+import {AuthStackParamList} from 'src/@types/navigation';
 
 const signupSchema = yup.object({
   email: yup
@@ -30,6 +32,8 @@ const initialValues = {
 
 const SignIn: FC<Props> = props => {
   const [secureEntry, setSecureEntry] = useState(true);
+
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
   const togglePasswordView = () => {
     setSecureEntry(!secureEntry);
@@ -65,8 +69,18 @@ const SignIn: FC<Props> = props => {
           <SubmitBtn title="Sign in" />
 
           <View style={styles.linkContainer}>
-            <AppLink title="Forgetten Password" />
-            <AppLink title="Sign up" />
+            <AppLink
+              title="Forgetten Password"
+              onPress={() => {
+                navigation.navigate('ForgettenPassword');
+              }}
+            />
+            <AppLink
+              title="Sign up"
+              onPress={() => {
+                navigation.navigate('SignUp');
+              }}
+            />
           </View>
         </View>
       </AuthFormContainer>
