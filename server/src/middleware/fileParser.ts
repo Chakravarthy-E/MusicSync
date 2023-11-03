@@ -5,11 +5,7 @@ export interface RequestWithFiles extends Request {
   files?: { [key: string]: File };
 }
 
-export const fileParser: RequestHandler = async (
-  req: RequestWithFiles,
-  res,
-  next
-) => {
+const fileParser: RequestHandler = async (req: RequestWithFiles, res, next) => {
   if (!req.headers["content-type"]?.startsWith("multipart/form-data;"))
     return res.status(422).json({ error: "Only accepts form data!" });
 
@@ -36,3 +32,5 @@ export const fileParser: RequestHandler = async (
   }
   next();
 };
+
+export default fileParser;

@@ -1,14 +1,17 @@
-import { UserDocument } from "#/models/user";
-import moment from "moment";
 import History from "#/models/history";
+import { UserDocument } from "#/models/user";
 import { Request } from "express";
+import moment from "moment";
 
 export const generateToken = (length = 6) => {
+  // declare a variable
   let otp = "";
+
   for (let i = 0; i < length; i++) {
-    let digit = Math.floor(Math.random() * 10);
+    const digit = Math.floor(Math.random() * 10);
     otp += digit;
   }
+
   return otp;
 };
 

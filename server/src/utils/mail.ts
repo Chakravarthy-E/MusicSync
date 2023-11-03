@@ -1,15 +1,19 @@
 import nodemailer from "nodemailer";
 import path from "path";
+
+import User from "#/models/user";
+import EmailVerificationToken from "#/models/emailVerificationToken";
 import {
   MAILTRAP_PASS,
   MAILTRAP_USER,
   SIGN_IN_URL,
   VERIFICATION_EMAIL,
 } from "#/utils/variables";
+import { generateToken } from "#/utils/helper";
 import { generateTemplate } from "#/mail/templete";
 
 const generateMailTransporter = () => {
-  var transport = nodemailer.createTransport({
+  const transport = nodemailer.createTransport({
     host: "sandbox.smtp.mailtrap.io",
     port: 2525,
     auth: {
@@ -31,15 +35,16 @@ export const sendVerificationMail = async (token: string, profile: Profile) => {
   const transport = generateMailTransporter();
 
   const { name, email, userId } = profile;
-  const welocomeMessage = `Hi ${name} Welcome to MusicSync! There are so much thing that we do for verified users.Use the given OTP to verify your email`;
+
+  const welcomeMessage = `Hi ${name}, welcome to Podify! There are so much thing that we do for verified users. Use the given OTP to verify your email.`;
 
   transport.sendMail({
     to: email,
     from: VERIFICATION_EMAIL,
     subject: "Welcome message",
     html: generateTemplate({
-      title: "Welcome to MusicSync",
-      message: welocomeMessage,
+      title: "Welcome to Podify",
+      message: welcomeMessage,
       logo: "cid:logo",
       banner: "cid:welcome",
       link: "#",
@@ -69,7 +74,9 @@ export const sendForgetPasswordLink = async (options: Options) => {
   const transport = generateMailTransporter();
 
   const { email, link } = options;
-  const message = `We just received a request that you forgot your password. No problem you can use the link and create brand new password`;
+
+  const message =
+    "We just received a request that you forgot your password. No problem you can use the link below and create brand new password.";
 
   transport.sendMail({
     to: email,
@@ -104,14 +111,14 @@ export const sendPassResetSuccessEmail = async (
 ) => {
   const transport = generateMailTransporter();
 
-  const message = `Dear ${name} we just updated your new password. You can now sign in with in your new password`;
+  const message = `Dear ${name} we just updated your new password. You can now sign in with your new password.`;
 
   transport.sendMail({
     to: email,
     from: VERIFICATION_EMAIL,
-    subject: "Password Reset Successfullly",
+    subject: "Password Reset Successfully",
     html: generateTemplate({
-      title: "Password Reset Successfullly",
+      title: "Password Reset Successfully",
       message,
       logo: "cid:logo",
       banner: "cid:forget_password",

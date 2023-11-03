@@ -2,6 +2,7 @@ import React, {FC, useState} from 'react';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import * as yup from 'yup';
 import {View, StyleSheet} from 'react-native';
+import axios from 'axios';
 
 import AuthInputField from '@components/form/AuthInputField';
 import Form from '@components/form';
@@ -10,6 +11,7 @@ import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
 import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import {AuthStackParamList} from 'src/@types/navigation';
+import {FormikHelpers} from 'formik';
 
 const signupSchema = yup.object({
   name: yup
@@ -35,6 +37,12 @@ const signupSchema = yup.object({
 
 interface Props {}
 
+interface NewUser {
+  name: string;
+  email: string;
+  password: string;
+}
+
 const initialValues = {
   name: '',
   email: '',
@@ -50,11 +58,26 @@ const SignUp: FC<Props> = props => {
     setSecureEntry(!secureEntry);
   };
 
+  const handleSubmit = async (
+    values: NewUser,
+    actions: FormikHelpers<NewUser>,
+  ) => {
+    try {
+      const response = await axios.post(
+        'http://192.168.1.100:8989/auth/create',
+        {
+          ...values,
+        },
+      );
+      console.log(response);
+    } catch (error) {
+      console.log('SignUp error', error);
+    }
+  };
+
   return (
     <Form
-      onSubmit={values => {
-        console.log(values);
-      }}
+      onSubmit={handleSubmit}
       initialValues={initialValues}
       validationSchema={signupSchema}>
       <AuthFormContainer
