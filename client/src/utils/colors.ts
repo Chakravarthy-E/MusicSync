@@ -1,5 +1,5 @@
-const PRIMARY = '#443333';
-const SECONDARY = '#EEA849';
+const PRIMARY = '#000';
+const SECONDARY = '#39A7FF';
 const CONSTRAST = '#FFFFFF';
 const INACTIVE_CONSTRAST = 'rgba(255,255,255,0.5)';
 const ERROR = '#FF5B14';
