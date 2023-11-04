@@ -12,6 +12,7 @@ import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import {AuthStackParamList} from 'src/@types/navigation';
 import {FormikHelpers} from 'formik';
+import client from 'src/api/client';
 
 const signupSchema = yup.object({
   name: yup
@@ -37,7 +38,8 @@ const signupSchema = yup.object({
 
 interface Props {}
 
-interface NewUser {
+ interface NewUser {
+  id?: string;
   name: string;
   email: string;
   password: string;
@@ -63,13 +65,11 @@ const SignUp: FC<Props> = props => {
     actions: FormikHelpers<NewUser>,
   ) => {
     try {
-      const response = await axios.post(
-        'http://192.168.1.100:8989/auth/create',
-        {
-          ...values,
-        },
-      );
-      console.log(response);
+      const {data} = await client.post('/auth/create', {
+        ...values,
+      });
+
+      navigation.navigate('Verification', {userInfo: data.user});
     } catch (error) {
       console.log('SignUp error', error);
     }
