@@ -9,6 +9,8 @@ import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
 import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import {AuthStackParamList} from 'src/@types/navigation';
+import {FormikHelpers} from 'formik';
+import client from 'src/api/client';
 
 const signupSchema = yup.object({
   email: yup
@@ -25,6 +27,11 @@ const signupSchema = yup.object({
 
 interface Props {}
 
+interface SignUserInfo {
+  email: string;
+  password: string;
+}
+
 const initialValues = {
   email: '',
   password: '',
@@ -39,11 +46,24 @@ const SignIn: FC<Props> = props => {
     setSecureEntry(!secureEntry);
   };
 
+  const handleSubmit = async (
+    values: SignUserInfo,
+    actions: FormikHelpers<SignUserInfo>,
+  ) => {
+    try {
+      const {data} = await client.post('/auth/sign-in', {
+        ...values,
+      });
+
+      console.log(data);
+    } catch (error) {
+      console.log('Sign in error', error);
+    }
+  };
+
   return (
     <Form
-      onSubmit={values => {
-        console.log(values);
-      }}
+      onSubmit={handleSubmit}
       initialValues={initialValues}
       validationSchema={signupSchema}>
       <AuthFormContainer heading="Welcome back !" subHeading="">
