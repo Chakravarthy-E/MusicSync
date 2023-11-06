@@ -8,6 +8,8 @@ import SubmitBtn from '@components/form/SubmitBtn';
 import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import {AuthStackParamList} from 'src/@types/navigation';
+import {FormikHelpers} from 'formik';
+import client from 'src/api/client';
 
 const forgettenPasswordSchema = yup.object({
   email: yup
@@ -19,8 +21,29 @@ const forgettenPasswordSchema = yup.object({
 
 interface Props {}
 
+interface InitialValue {
+  email: string;
+}
+
 const initialValues = {
   email: '',
+};
+
+const handleSubmit = async (
+  values: InitialValue,
+  actions: FormikHelpers<InitialValue>,
+) => {
+  actions.setSubmitting(true);
+  try {
+    const {data} = await client.post('/auth/forget-password', {
+      ...values,
+    });
+
+    console.log(data);
+  } catch (error) {
+    console.log('forgetten password error', error);
+  }
+  actions.setSubmitting(false);
 };
 
 const ForgettenPassword: FC<Props> = props => {
@@ -28,9 +51,7 @@ const ForgettenPassword: FC<Props> = props => {
 
   return (
     <Form
-      onSubmit={values => {
-        console.log(values);
-      }}
+      onSubmit={handleSubmit}
       initialValues={initialValues}
       validationSchema={forgettenPasswordSchema}>
       <AuthFormContainer

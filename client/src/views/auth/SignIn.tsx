@@ -50,6 +50,7 @@ const SignIn: FC<Props> = props => {
     values: SignUserInfo,
     actions: FormikHelpers<SignUserInfo>,
   ) => {
+    actions.setSubmitting(true);
     try {
       const {data} = await client.post('/auth/sign-in', {
         ...values,
@@ -59,6 +60,7 @@ const SignIn: FC<Props> = props => {
     } catch (error) {
       console.log('Sign in error', error);
     }
+    actions.setSubmitting(false);
   };
 
   return (
