@@ -38,7 +38,7 @@ const signupSchema = yup.object({
 
 interface Props {}
 
- interface NewUser {
+interface NewUser {
   id?: string;
   name: string;
   email: string;
@@ -64,6 +64,7 @@ const SignUp: FC<Props> = props => {
     values: NewUser,
     actions: FormikHelpers<NewUser>,
   ) => {
+    actions.setSubmitting(true);
     try {
       const {data} = await client.post('/auth/create', {
         ...values,
@@ -73,6 +74,7 @@ const SignUp: FC<Props> = props => {
     } catch (error) {
       console.log('SignUp error', error);
     }
+    actions.setSubmitting(false);
   };
 
   return (
