@@ -20,6 +20,9 @@ import client from 'src/api/client';
 import {getFromAsyncStorage, Keys} from '@utils/asyncStorage';
 import Progress from '@ui/Progress';
 import {mapRange} from '@utils/math';
+import catchAsyncError from 'src/api/catchError';
+import {updateNotification} from 'src/store/notification';
+import {useDispatch} from 'react-redux';
 
 interface FormFields {
   title: string;
@@ -62,6 +65,7 @@ const Upload: FC<Props> = props => {
   const [audioInfo, setAudioInfo] = useState({...defaultForm});
   const [uploadProgress, setUploadProgress] = useState(0);
   const [busy, setBusy] = useState(false);
+  const dispatch = useDispatch();
 
   const handleUpload = async () => {
     try {
@@ -111,9 +115,8 @@ const Upload: FC<Props> = props => {
 
       console.log(data);
     } catch (error) {
-      if (error instanceof yup.ValidationError) {
-        console.log('Validation error', error.message);
-      } else console.log(error);
+      const errorMessage = catchAsyncError(error);
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     }
     setBusy(false);
   };
