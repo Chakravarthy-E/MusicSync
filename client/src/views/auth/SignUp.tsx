@@ -2,7 +2,7 @@ import React, {FC, useState} from 'react';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import * as yup from 'yup';
 import {View, StyleSheet} from 'react-native';
-import axios from 'axios';
+import axios, {isAxiosError} from 'axios';
 
 import AuthInputField from '@components/form/AuthInputField';
 import Form from '@components/form';
@@ -13,6 +13,9 @@ import AuthFormContainer from '@components/AuthFormContainer';
 import {AuthStackParamList} from 'src/@types/navigation';
 import {FormikHelpers} from 'formik';
 import client from 'src/api/client';
+import catchAsyncError from 'src/api/catchError';
+import {useDispatch} from 'react-redux';
+import {updateNotification} from 'src/store/notification';
 
 const signupSchema = yup.object({
   name: yup
@@ -56,6 +59,8 @@ const SignUp: FC<Props> = props => {
 
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
+  const dispatch = useDispatch();
+
   const togglePasswordView = () => {
     setSecureEntry(!secureEntry);
   };
@@ -72,7 +77,8 @@ const SignUp: FC<Props> = props => {
 
       navigation.navigate('Verification', {userInfo: data.user});
     } catch (error) {
-      console.log('SignUp error', error);
+      const errorMessage = catchAsyncError(error);
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     }
     actions.setSubmitting(false);
   };
