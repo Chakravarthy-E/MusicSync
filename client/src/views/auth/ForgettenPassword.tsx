@@ -10,6 +10,9 @@ import AuthFormContainer from '@components/AuthFormContainer';
 import {AuthStackParamList} from 'src/@types/navigation';
 import {FormikHelpers} from 'formik';
 import client from 'src/api/client';
+import catchAsyncError from 'src/api/catchError';
+import {updateNotification} from 'src/store/notification';
+import {useDispatch} from 'react-redux';
 
 const forgettenPasswordSchema = yup.object({
   email: yup
@@ -29,25 +32,28 @@ const initialValues = {
   email: '',
 };
 
-const handleSubmit = async (
-  values: InitialValue,
-  actions: FormikHelpers<InitialValue>,
-) => {
-  actions.setSubmitting(true);
-  try {
-    const {data} = await client.post('/auth/forget-password', {
-      ...values,
-    });
-
-    console.log(data);
-  } catch (error) {
-    console.log('forgetten password error', error);
-  }
-  actions.setSubmitting(false);
-};
-
 const ForgettenPassword: FC<Props> = props => {
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+
+  const dispatch = useDispatch();
+
+  const handleSubmit = async (
+    values: InitialValue,
+    actions: FormikHelpers<InitialValue>,
+  ) => {
+    actions.setSubmitting(true);
+    try {
+      const {data} = await client.post('/auth/forget-password', {
+        ...values,
+      });
+
+      console.log(data);
+    } catch (error) {
+      const errorMessage = catchAsyncError(error);
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
+    }
+    actions.setSubmitting(false);
+  };
 
   return (
     <Form
