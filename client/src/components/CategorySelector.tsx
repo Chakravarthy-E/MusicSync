@@ -9,6 +9,7 @@ import {
   Text,
   ScrollView,
 } from 'react-native';
+import BasicModel from '@ui/BasicModel';
 
 interface Props<T> {
   data: T[];
@@ -36,61 +37,37 @@ const CategorySelector = <T extends any>({
   };
 
   return (
-    <Modal onRequestClose={onRequestClose} visible={visible} transparent>
-      <View style={styles.modelContainer}>
-        <Pressable onPress={onRequestClose} style={styles.backDrop} />
-        <View style={styles.modal}>
-          <Text style={styles.title}>{title}</Text>
-          <ScrollView>
-            {data.map((item, index) => {
-              return (
-                <Pressable
-                  onPress={() => handleSelect(item, index)}
-                  key={index}
-                  style={styles.selecterContainer}>
-                  {selectedIndex === index ? (
-                    <MaterialComIcon
-                      name="radiobox-marked"
-                      color={colors.SECONDARY}
-                    />
-                  ) : (
-                    <MaterialComIcon
-                      name="radiobox-blank"
-                      color={colors.SECONDARY}
-                    />
-                  )}
-                  {renderItem(item)}
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        </View>
-      </View>
-    </Modal>
+    <BasicModel visible={visible} onRequestClose={onRequestClose}>
+      <Text style={styles.title}>{title}</Text>
+      <ScrollView>
+        {data.map((item, index) => {
+          return (
+            <Pressable
+              onPress={() => handleSelect(item, index)}
+              key={index}
+              style={styles.selecterContainer}>
+              {selectedIndex === index ? (
+                <MaterialComIcon
+                  name="radiobox-marked"
+                  color={colors.SECONDARY}
+                />
+              ) : (
+                <MaterialComIcon
+                  name="radiobox-blank"
+                  color={colors.SECONDARY}
+                />
+              )}
+              {renderItem(item)}
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+    </BasicModel>
   );
 };
 
 const styles = StyleSheet.create({
   container: {},
-  backDrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.INACTIVE_CONSTRAST,
-    zIndex: -1,
-  },
-  modelContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparet',
-  },
-  modal: {
-    width: '90%',
-    maxHeight: '50%',
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: colors.CONSTRAST,
-    zIndex: 1,
-  },
   title: {
     fontSize: 18,
     fontWeight: '700',
