@@ -3,6 +3,7 @@ import FileSelector from '@components/FileSelector';
 import AppButton from '@ui/AppButton';
 import {categories} from '@utils/categories';
 import colors from '@utils/colors';
+import {getClient} from 'src/api/client';
 import React, {FC, useState} from 'react';
 import {types} from 'react-native-document-picker';
 import {DocumentPickerResponse} from 'react-native-document-picker';
@@ -16,7 +17,6 @@ import {
 } from 'react-native';
 import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as yup from 'yup';
-import client from 'src/api/client';
 import {getFromAsyncStorage, Keys} from '@utils/asyncStorage';
 import Progress from '@ui/Progress';
 import {mapRange} from '@utils/math';
@@ -89,13 +89,10 @@ const Upload: FC<Props> = props => {
           uri: finalData.poster.uri,
         });
 
-      const token = await getFromAsyncStorage(Keys.AUTH_TOKEN);
+      const client = await getClient({'Content-Type': 'multipart/form-data;'});
+
       const {data} = await client.post('/audio/create', formData, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'multipart/form-data;',
-        },
-        onDownloadProgress(progressEvent) {
+        onUploadProgress(progressEvent) {
           const uploaded = mapRange({
             inputMin: 0,
             inputMax: progressEvent.total || 0,

@@ -29,8 +29,8 @@ const AppNotification: FC<Props> = props => {
 
   switch (type) {
     case 'success':
-      backgroundColor = colors.SUCCESS;
-      textColor = colors.PRIMARY;
+      backgroundColor = colors.SECONDARY;
+      textColor = colors.CONSTRAST;
       break;
   }
 
