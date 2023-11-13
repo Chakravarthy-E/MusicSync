@@ -1,11 +1,11 @@
-import {createSlice, createSelector, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from 'src/store';
+import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {RootState} from '.';
 
 export interface UserProfile {
   id: string;
   name: string;
   email: string;
-  verified: string;
+  verified: boolean;
   avatar?: string;
   followers: number;
   followings: number;

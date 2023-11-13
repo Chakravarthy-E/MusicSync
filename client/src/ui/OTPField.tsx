@@ -1,18 +1,18 @@
 import colors from '@utils/colors';
-import React, {FC, useRef, forwardRef} from 'react';
-import {StyleSheet, TextInput, TextInputProps} from 'react-native';
+import {FC, forwardRef} from 'react';
+import {View, StyleSheet, TextInput, TextInputProps} from 'react-native';
 
 interface Props extends TextInputProps {
   ref: any;
 }
 
-const OTPField: FC<Props> = forwardRef<TextInput, Props>((props, ref) => {
+const OTPField = forwardRef<TextInput, Props>((props, ref) => {
   return (
     <TextInput
       {...props}
       ref={ref}
       style={[styles.input, props.style]}
-      placeholderTextColor={colors.INACTIVE_CONSTRAST}
+      placeholderTextColor={colors.INACTIVE_CONTRAST}
     />
   );
 });
@@ -25,7 +25,8 @@ const styles = StyleSheet.create({
     borderColor: colors.SECONDARY,
     borderWidth: 2,
     textAlign: 'center',
-    color: colors.CONSTRAST,
+    color: colors.CONTRAST,
+    fontSize: 18,
     fontWeight: 'bold',
     lineHeight: 0,
   },

@@ -1,13 +1,15 @@
+import {getFromAsyncStorage, Keys} from '@utils/asyncStorage';
 import {useQuery} from 'react-query';
 import {useDispatch} from 'react-redux';
-import {getClient} from 'src/api/client';
+import {AudioData} from 'src/@types/audio';
 import catchAsyncError from 'src/api/catchError';
-import {updateNotification} from 'src/store/notification';
-import {AudioData, Playlist} from 'src/@types/audio';
+import {getClient} from 'src/api/client';
+import {upldateNotification} from 'src/store/notification';
+import {Playlist} from 'src/@types/audio';
 
 const fetchLatest = async (): Promise<AudioData[]> => {
   const client = await getClient();
-  const {data} = await client.get('/audio/latest');
+  const {data} = await client('/audio/latest');
   return data.audios;
 };
 
@@ -16,15 +18,15 @@ export const useFetchLatestAudios = () => {
   return useQuery(['latest-uploads'], {
     queryFn: () => fetchLatest(),
     onError(err) {
-      const errrMessage = catchAsyncError(err);
-      dispatch(updateNotification({message: errrMessage, type: 'error'}));
+      const errorMessage = catchAsyncError(err);
+      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
     },
   });
 };
 
 const fetchRecommended = async (): Promise<AudioData[]> => {
   const client = await getClient();
-  const {data} = await client.get('/profile/recommended');
+  const {data} = await client('/profile/recommended');
   return data.audios;
 };
 
@@ -33,15 +35,15 @@ export const useFetchRecommendedAudios = () => {
   return useQuery(['recommended'], {
     queryFn: () => fetchRecommended(),
     onError(err) {
-      const errrMessage = catchAsyncError(err);
-      dispatch(updateNotification({message: errrMessage, type: 'error'}));
+      const errorMessage = catchAsyncError(err);
+      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
     },
   });
 };
 
 const fetchPlaylist = async (): Promise<Playlist[]> => {
   const client = await getClient();
-  const {data} = await client.get('/playlist/by-profile');
+  const {data} = await client('/playlist/by-profile');
   return data.playlist;
 };
 
@@ -50,14 +52,15 @@ export const useFetchPlaylist = () => {
   return useQuery(['playlist'], {
     queryFn: () => fetchPlaylist(),
     onError(err) {
-      const errrMessage = catchAsyncError(err);
-      dispatch(updateNotification({message: errrMessage, type: 'error'}));
+      const errorMessage = catchAsyncError(err);
+      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
     },
   });
 };
+
 const fetchUploadsByProfile = async (): Promise<AudioData[]> => {
   const client = await getClient();
-  const {data} = await client.get('/profile/uploads');
+  const {data} = await client('/profile/uploads');
   return data.audios;
 };
 
@@ -66,25 +69,25 @@ export const useFetchUploadsByProfile = () => {
   return useQuery(['uploads-by-profile'], {
     queryFn: () => fetchUploadsByProfile(),
     onError(err) {
-      const errrMessage = catchAsyncError(err);
-      dispatch(updateNotification({message: errrMessage, type: 'error'}));
+      const errorMessage = catchAsyncError(err);
+      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
     },
   });
 };
 
 const fetchFavorites = async (): Promise<AudioData[]> => {
   const client = await getClient();
-  const {data} = await client.get('/favorite');
+  const {data} = await client('/favorite');
   return data.audios;
 };
 
-export const useFetchFavorites = () => {
+export const useFetchFavorite = () => {
   const dispatch = useDispatch();
   return useQuery(['favorite'], {
     queryFn: () => fetchFavorites(),
     onError(err) {
-      const errrMessage = catchAsyncError(err);
-      dispatch(updateNotification({message: errrMessage, type: 'error'}));
+      const errorMessage = catchAsyncError(err);
+      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
     },
   });
 };

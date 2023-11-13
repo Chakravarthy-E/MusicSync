@@ -1,48 +1,55 @@
-import React, {FC, useState} from 'react';
-import {useNavigation, NavigationProp} from '@react-navigation/native';
-import * as yup from 'yup';
-import {View, StyleSheet} from 'react-native';
-import axios, {isAxiosError} from 'axios';
-
 import AuthInputField from '@components/form/AuthInputField';
 import Form from '@components/form';
+import colors from '@utils/colors';
+import {FC, useState} from 'react';
+import {
+  Button,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import * as yup from 'yup';
 import SubmitBtn from '@components/form/SubmitBtn';
 import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
 import AppLink from '@ui/AppLink';
+import CircleUi from '@ui/CircleUi';
 import AuthFormContainer from '@components/AuthFormContainer';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
 import {FormikHelpers} from 'formik';
 import client from 'src/api/client';
+import {isAxiosError} from 'axios';
 import catchAsyncError from 'src/api/catchError';
 import {useDispatch} from 'react-redux';
-import {updateNotification} from 'src/store/notification';
+import {upldateNotification} from 'src/store/notification';
 
 const signupSchema = yup.object({
   name: yup
     .string()
-    .trim('Name is missing')
-    .min(3, 'Invalid name')
-    .required('Name is required'),
+    .trim('Name is missing!')
+    .min(3, 'Invalid name!')
+    .required('Name is required!'),
   email: yup
     .string()
-    .trim('Name is missing')
-    .email('Invalid email')
-    .required('Email is required'),
+    .trim('Email is missing!')
+    .email('Invalid email!')
+    .required('Email is required!'),
   password: yup
     .string()
-    .trim('Password is missing')
-    .min(8, 'Password is too short')
+    .trim('Password is missing!')
+    .min(8, 'Password is too short!')
     .matches(
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
       'Password is too simple!',
     )
-    .required('Password is required'),
+    .required('Password is required!'),
 });
 
 interface Props {}
 
 interface NewUser {
-  id?: string;
   name: string;
   email: string;
   password: string;
@@ -56,9 +63,7 @@ const initialValues = {
 
 const SignUp: FC<Props> = props => {
   const [secureEntry, setSecureEntry] = useState(true);
-
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
-
   const dispatch = useDispatch();
 
   const togglePasswordView = () => {
@@ -71,6 +76,7 @@ const SignUp: FC<Props> = props => {
   ) => {
     actions.setSubmitting(true);
     try {
+      // we want to send these information to our api
       const {data} = await client.post('/auth/create', {
         ...values,
       });
@@ -78,7 +84,7 @@ const SignUp: FC<Props> = props => {
       navigation.navigate('Verification', {userInfo: data.user});
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(updateNotification({message: errorMessage, type: 'error'}));
+      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
     }
     actions.setSubmitting(false);
   };
@@ -120,9 +126,9 @@ const SignUp: FC<Props> = props => {
 
           <View style={styles.linkContainer}>
             <AppLink
-              title="Forgetten Password"
+              title="I Lost My Password"
               onPress={() => {
-                navigation.navigate('ForgettenPassword');
+                navigation.navigate('LostPassword');
               }}
             />
             <AppLink

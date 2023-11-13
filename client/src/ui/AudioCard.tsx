@@ -1,6 +1,6 @@
 import colors from '@utils/colors';
-import React, {FC} from 'react';
-import {StyleSheet, Pressable, Image, Text} from 'react-native';
+import {FC} from 'react';
+import {View, StyleSheet, Pressable, Image, Text} from 'react-native';
 
 interface Props {
   title: string;
@@ -25,17 +25,10 @@ const AudioCard: FC<Props> = ({title, poster, onPress, onLongPress}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: 100,
-    marginRight: 15,
-  },
-  poster: {
-    height: 100,
-    aspectRatio: 1,
-    borderRadius: 7,
-  },
+  container: {width: 100, marginRight: 15},
+  poster: {height: 100, aspectRatio: 1, borderRadius: 7},
   title: {
-    color: colors.CONSTRAST,
+    color: colors.CONTRAST,
     fontWeight: '500',
     fontSize: 16,
     marginTop: 5,
