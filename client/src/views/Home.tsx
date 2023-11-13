@@ -34,6 +34,7 @@ const Home: FC<Props> = props => {
       const client = await getClient();
 
       const {data} = await client.post('/favorite?audioId=' + selectedAudio.id);
+      dispatch(upldateNotification({message: 'Audio added', type: 'success'}));
     } catch (error) {
       const errorMessage = catchAsyncError(error);
       dispatch(upldateNotification({message: errorMessage, type: 'error'}));
@@ -63,10 +64,12 @@ const Home: FC<Props> = props => {
         title: value.title,
         visibility: value.private ? 'private' : 'public',
       });
-      console.log(data);
+      dispatch(
+        upldateNotification({message: 'Playlist Created', type: 'success'}),
+      );
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      console.log(errorMessage);
+      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
     }
   };
 
@@ -87,7 +90,7 @@ const Home: FC<Props> = props => {
       );
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      console.log(errorMessage);
+      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
     }
   };
 
