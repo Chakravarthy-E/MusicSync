@@ -1,5 +1,5 @@
 import colors from '@utils/colors';
-import React, {FC} from 'react';
+import {FC} from 'react';
 import {View, StyleSheet, FlexStyle} from 'react-native';
 
 interface Props {
@@ -8,32 +8,20 @@ interface Props {
 }
 
 const CircleUi: FC<Props> = ({size, position}) => {
-  let viewPosition: FlexStyle = {};
+  let viewPostion: FlexStyle = {};
 
   switch (position) {
     case 'top-left':
-      viewPosition = {
-        top: -size / 2,
-        left: -size / 2,
-      };
+      viewPostion = {top: -size / 2, left: -size / 2};
       break;
     case 'top-right':
-      viewPosition = {
-        top: -size / 2,
-        right: -size / 2,
-      };
+      viewPostion = {top: -size / 2, right: -size / 2};
       break;
     case 'bottom-right':
-      viewPosition = {
-        bottom: -size / 2,
-        right: -size / 2,
-      };
+      viewPostion = {bottom: -size / 2, right: -size / 2};
       break;
     case 'bottom-left':
-      viewPosition = {
-        bottom: -size / 2,
-        left: -size / 2,
-      };
+      viewPostion = {bottom: -size / 2, left: -size / 2};
       break;
   }
 
@@ -42,9 +30,8 @@ const CircleUi: FC<Props> = ({size, position}) => {
       style={{
         width: size,
         height: size,
-        borderRadius: size / 2,
         position: 'absolute',
-        ...viewPosition,
+        ...viewPostion,
       }}>
       <View
         style={{
@@ -53,21 +40,22 @@ const CircleUi: FC<Props> = ({size, position}) => {
           borderRadius: size / 2,
           backgroundColor: colors.SECONDARY,
           opacity: 0.3,
-        }}>
-        <View
-          style={{
-            width: size / 1.5,
-            height: size / 1.5,
-            borderRadius: size / 2,
-            backgroundColor: colors.SECONDARY,
-            opacity: 0.3,
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: [{translateX: -size / 3}, {translateY: -size / 3}],
-          }}
-        />
-      </View>
+        }}
+      />
+
+      <View
+        style={{
+          width: size / 1.5,
+          height: size / 1.5,
+          borderRadius: size / 2,
+          backgroundColor: colors.SECONDARY,
+          opacity: 0.3,
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: [{translateX: -size / 3}, {translateY: -size / 3}],
+        }}
+      />
     </View>
   );
 };

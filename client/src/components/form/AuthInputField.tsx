@@ -1,9 +1,7 @@
 import AppInput from '@ui/AppInput';
 import colors from '@utils/colors';
 import {useFormikContext} from 'formik';
-import React, {FC, ReactNode, useEffect} from 'react';
-
-
+import {FC, ReactNode, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -13,7 +11,6 @@ import {
   ViewStyle,
   Pressable,
 } from 'react-native';
-
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -36,6 +33,7 @@ interface Props {
 
 const AuthInputField: FC<Props> = props => {
   const inputTransformValue = useSharedValue(0);
+
   const {handleChange, values, errors, handleBlur, touched} = useFormikContext<{
     [key: string]: string;
   }>();
@@ -43,13 +41,13 @@ const AuthInputField: FC<Props> = props => {
   const {
     label,
     placeholder,
-    keyboardType,
     autoCapitalize,
+    keyboardType,
     secureTextEntry,
     containerStyle,
     name,
     rightIcon,
-    onRightIconPress
+    onRightIconPress,
   } = props;
 
   const errorMsg = touched[name] && errors[name] ? errors[name] : '';
@@ -92,6 +90,7 @@ const AuthInputField: FC<Props> = props => {
           value={values[name]}
           onBlur={handleBlur(name)}
         />
+
         {rightIcon ? (
           <Pressable onPress={onRightIconPress} style={styles.rightIcon}>
             {rightIcon}
@@ -110,7 +109,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   label: {
-    color: colors.CONSTRAST,
+    color: colors.CONTRAST,
   },
   errorMsg: {
     color: colors.ERROR,

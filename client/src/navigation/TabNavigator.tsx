@@ -1,10 +1,11 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '@utils/colors';
 import Home from '@views/Home';
 import Profile from '@views/Profile';
 import Upload from '@views/Upload';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ProfileNavigator from './ProfileNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -13,7 +14,9 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {backgroundColor: colors.PRIMARY},
+        tabBarStyle: {
+          backgroundColor: colors.PRIMARY,
+        },
       }}>
       <Tab.Screen
         name="HomeScreen"
@@ -28,8 +31,8 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="ProfileScreen"
-        component={Profile}
+        name="ProfileNavigator"
+        component={ProfileNavigator}
         options={{
           tabBarIcon: props => {
             return (
@@ -52,7 +55,7 @@ const TabNavigator = () => {
               />
             );
           },
-          tabBarLabel: 'Uploads',
+          tabBarLabel: 'Upload',
         }}
       />
     </Tab.Navigator>

@@ -1,7 +1,7 @@
-import React, {FC} from 'react';
+import colors from '@utils/colors';
+import {FC} from 'react';
 import {View, StyleSheet} from 'react-native';
 import PulseAnimationContainer from './PulseAnimationContainer';
-import colors from '@utils/colors';
 
 interface Props {
   items?: number;
@@ -22,11 +22,10 @@ const AudioListLoadingUI: FC<Props> = ({items = 8}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
   dummyListItem: {
     height: 50,
     width: '100%',
-    backgroundColor: colors.INACTIVE_CONSTRAST,
+    backgroundColor: colors.INACTIVE_CONTRAST,
     borderRadius: 5,
     marginBottom: 15,
   },
