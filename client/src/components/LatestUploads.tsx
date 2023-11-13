@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   title: {
-    color: colors.CONSTRAST,
+    color: colors.SECONDARY,
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 15,
