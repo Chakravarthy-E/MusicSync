@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   poster: {width: '100%', aspectRatio: 1, borderRadius: 7},
   title: {
-    color: colors.CONSTRAST,
+    color: colors.SECONDARY,
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 15,

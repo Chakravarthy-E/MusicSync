@@ -13,7 +13,6 @@ import {useDispatch} from 'react-redux';
 import PlaylistModal from '@components/PlaylistModal';
 import PlaylistForm, {PlayListInfo} from '@components/PlaylistForm';
 import {useFetchPlaylist} from 'src/hooks/query';
-// import { ScrollView } from 'react-native-reanimated/lib/typescript/Animated';
 
 interface Props {}
 
@@ -27,6 +26,7 @@ const Home: FC<Props> = props => {
 
   const dispatch = useDispatch();
 
+  // For Adding audio in Favorite List
   const handleOnFavPress = async () => {
     if (!selectedAudio) return;
     try {
@@ -42,16 +42,19 @@ const Home: FC<Props> = props => {
     setshowOptions(false);
   };
 
+  // If long Press it shows model
   const handleOnLongPress = (audio: AudioData) => {
     setselectedAudio(audio);
     setshowOptions(true);
   };
 
+  //  If we press it added
   const handleOnAddToPlaylist = async () => {
     setshowOptions(false);
     setShowPlaylistModal(true);
   };
 
+  // To Add audio in Playlist
   const handlePlaylistSubmit = async (value: PlayListInfo) => {
     if (!value.title.trim()) return;
     try {
@@ -68,6 +71,7 @@ const Home: FC<Props> = props => {
     }
   };
 
+  // Updating playlist
   const updatePlayList = async (item: Playlist) => {
     try {
       const client = await getClient();
@@ -87,6 +91,7 @@ const Home: FC<Props> = props => {
       dispatch(updateNotification({message: errorMessage, type: 'error'}));
     }
   };
+  
   return (
     <ScrollView style={styles.container}>
       <LatestUploads
