@@ -1,5 +1,5 @@
 import colors from '@utils/colors';
-import React, {FC} from 'react';
+import {FC} from 'react';
 import {StyleSheet, Pressable, Text} from 'react-native';
 
 interface Props {

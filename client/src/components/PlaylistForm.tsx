@@ -1,10 +1,10 @@
-import BasicModel from '@ui/BasicModel';
+import BasicModalContainer from '@ui/BasicModalContainer';
 import colors from '@utils/colors';
-import React, {FC, useState} from 'react';
+import {FC, useState} from 'react';
 import {View, StyleSheet, TextInput, Pressable, Text} from 'react-native';
 import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export interface PlayListInfo {
+export interface PlaylistInfo {
   title: string;
   private: boolean;
 }
@@ -12,11 +12,11 @@ export interface PlayListInfo {
 interface Props {
   visible: boolean;
   onRequestClose(): void;
-  onSubmit(value: PlayListInfo): void;
+  onSubmit(value: PlaylistInfo): void;
 }
 
-const PlaylistForm: FC<Props> = ({onRequestClose, visible, onSubmit}) => {
-  const [playlistInfo, setplaylistInfo] = useState({
+const PlaylistForm: FC<Props> = ({visible, onSubmit, onRequestClose}) => {
+  const [playlistInfo, setPlaylistInfo] = useState({
     title: '',
     private: false,
   });
@@ -25,26 +25,28 @@ const PlaylistForm: FC<Props> = ({onRequestClose, visible, onSubmit}) => {
     onSubmit(playlistInfo);
     handleClose();
   };
+
   const handleClose = () => {
-    setplaylistInfo({title: '', private: false});
+    setPlaylistInfo({title: '', private: false});
     onRequestClose();
   };
+
   return (
-    <BasicModel visible={visible} onRequestClose={handleClose}>
+    <BasicModalContainer visible={visible} onRequestClose={handleClose}>
       <View>
         <Text style={styles.title}>Create New Playlist</Text>
         <TextInput
+          onChangeText={text => {
+            setPlaylistInfo({...playlistInfo, title: text});
+          }}
           placeholder="Title"
           style={styles.input}
-          onChangeText={text => {
-            setplaylistInfo({...playlistInfo, title: text});
-          }}
           value={playlistInfo.title}
         />
 
         <Pressable
           onPress={() => {
-            setplaylistInfo({...playlistInfo, private: !playlistInfo.private});
+            setPlaylistInfo({...playlistInfo, private: !playlistInfo.private});
           }}
           style={styles.privateSelector}>
           {playlistInfo.private ? (
@@ -54,11 +56,12 @@ const PlaylistForm: FC<Props> = ({onRequestClose, visible, onSubmit}) => {
           )}
           <Text style={styles.privateLabel}>Private</Text>
         </Pressable>
-        <Pressable style={styles.submitBtn} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Create</Text>
+
+        <Pressable onPress={handleSubmit} style={styles.submitBtn}>
+          <Text>Create</Text>
         </Pressable>
       </View>
-    </BasicModel>
+    </BasicModalContainer>
   );
 };
 
@@ -91,11 +94,6 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: colors.PRIMARY,
     borderRadius: 7,
-    backgroundColor: colors.SECONDARY,
-  },
-  buttonText: {
-    color: colors.CONSTRAST,
-    fontSize: 16,
   },
 });
 

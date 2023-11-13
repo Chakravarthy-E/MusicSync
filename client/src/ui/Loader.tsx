@@ -1,6 +1,5 @@
 import colors from '@utils/colors';
-import React, {FC, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {FC, useEffect} from 'react';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -13,7 +12,7 @@ interface Props {
   color?: string;
 }
 
-const Loader: FC<Props> = ({color = colors.CONSTRAST}) => {
+const Loader: FC<Props> = ({color = colors.CONTRAST}) => {
   const initialRotation = useSharedValue(0);
 
   const transform = useAnimatedStyle(() => {
@@ -25,15 +24,12 @@ const Loader: FC<Props> = ({color = colors.CONSTRAST}) => {
   useEffect(() => {
     initialRotation.value = withRepeat(withTiming(360), -1);
   });
+
   return (
     <Animated.View style={transform}>
       <AntDesign name="loading1" size={24} color={color} />
     </Animated.View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {},
-});
 
 export default Loader;

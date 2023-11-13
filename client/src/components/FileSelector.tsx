@@ -1,18 +1,11 @@
 import colors from '@utils/colors';
-import React, {FC, ReactNode} from 'react';
-
+import {FC, ReactNode} from 'react';
+import {ViewStyle} from 'react-native';
+import {View, StyleSheet, Pressable, Text, StyleProp} from 'react-native';
 import DocumentPicker, {
-  DocumentPickerResponse,
   DocumentPickerOptions,
+  DocumentPickerResponse,
 } from 'react-native-document-picker';
-import {
-  View,
-  StyleSheet,
-  Text,
-  Pressable,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
 import {SupportedPlatforms} from 'react-native-document-picker/lib/typescript/fileTypes';
 
 interface Props {
@@ -25,16 +18,17 @@ interface Props {
 
 const FileSelector: FC<Props> = ({
   icon,
-  btnTitle,
-  style,
   onSelect,
   options,
+  style,
+  btnTitle,
 }) => {
   const handleDocumentSelect = async () => {
     try {
       const document = await DocumentPicker.pick(options);
       const file = document[0];
       onSelect(file);
+      // [{"fileCopyUri": null, "name": "", "size": , "type": "", "uri": ""}]
     } catch (error) {
       if (!DocumentPicker.isCancel(error)) {
         console.log(error);
@@ -44,7 +38,7 @@ const FileSelector: FC<Props> = ({
   return (
     <Pressable
       onPress={handleDocumentSelect}
-      style={(styles.btnContainer, style)}>
+      style={[styles.btnContainer, style]}>
       <View style={styles.iconContainer}>{icon}</View>
       <Text style={styles.btnTitle}>{btnTitle}</Text>
     </Pressable>
@@ -66,7 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   btnTitle: {
-    color: colors.CONSTRAST,
+    color: colors.CONTRAST,
     marginTop: 5,
   },
 });

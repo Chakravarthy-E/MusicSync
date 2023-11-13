@@ -1,5 +1,5 @@
 import colors from '@utils/colors';
-import React, {FC} from 'react';
+import {FC} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 
 interface Props {
@@ -16,14 +16,14 @@ const EmptyRecords: FC<Props> = ({title}) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
   },
   title: {
     fontSize: 25,
     fontWeight: 'bold',
-    color: colors.INACTIVE_CONSTRAST,
+    color: colors.INACTIVE_CONTRAST,
   },
 });
 

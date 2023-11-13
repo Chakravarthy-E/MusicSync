@@ -1,65 +1,64 @@
-import React, {FC, useState} from 'react';
-import {StyleSheet, Pressable, Text, ScrollView} from 'react-native';
 import LatestUploads from '@components/LatestUploads';
+import OptionsModal from '@components/OptionsModal';
+import PlaylistForm, {PlaylistInfo} from '@components/PlaylistForm';
+import PlayListModal from '@components/PlaylistModal';
 import RecommendedAudios from '@components/RecommendedAudios';
-import OptionsModel from '@components/OptionsModel';
-import MaterialComIcom from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '@utils/colors';
-import {AudioData, Playlist} from 'src/@types/audio';
-import {getClient} from 'src/api/client';
-import catchAsyncError from 'src/api/catchError';
-import {updateNotification} from 'src/store/notification';
+import {FC, useState} from 'react';
+import {View, StyleSheet, Pressable, Text} from 'react-native';
+import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
-import PlaylistModal from '@components/PlaylistModal';
-import PlaylistForm, {PlayListInfo} from '@components/PlaylistForm';
+import {AudioData, Playlist} from 'src/@types/audio';
+import catchAsyncError from 'src/api/catchError';
+import {getClient} from 'src/api/client';
 import {useFetchPlaylist} from 'src/hooks/query';
+import {upldateNotification} from 'src/store/notification';
 
 interface Props {}
 
 const Home: FC<Props> = props => {
-  const [showOptions, setshowOptions] = useState(false);
-  const [selectedAudio, setselectedAudio] = useState<AudioData>();
+  const [showOptions, setShowOptions] = useState(false);
+  const [selectedAudio, setSelectedAudio] = useState<AudioData>();
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
-  const [showPlaylistForm, setshowPlaylistForm] = useState(false);
+  const [showPlaylistForm, setShowPlaylistForm] = useState(false);
 
   const {data} = useFetchPlaylist();
 
   const dispatch = useDispatch();
 
-  // For Adding audio in Favorite List
   const handleOnFavPress = async () => {
     if (!selectedAudio) return;
+    // send request with the audio id that we want to add to fav
+
     try {
       const client = await getClient();
+
       const {data} = await client.post('/favorite?audioId=' + selectedAudio.id);
-      dispatch(updateNotification({message: 'Audio Added', type: 'success'}));
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(updateNotification({message: errorMessage, type: 'error'}));
+      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
     }
 
-    setselectedAudio(undefined);
-    setshowOptions(false);
+    setSelectedAudio(undefined);
+    setShowOptions(false);
   };
 
-  // If long Press it shows model
   const handleOnLongPress = (audio: AudioData) => {
-    setselectedAudio(audio);
-    setshowOptions(true);
+    setSelectedAudio(audio);
+    setShowOptions(true);
   };
 
-  //  If we press it added
-  const handleOnAddToPlaylist = async () => {
-    setshowOptions(false);
+  const handleOnAddToPlaylist = () => {
+    setShowOptions(false);
     setShowPlaylistModal(true);
   };
 
-  // To Add audio in Playlist
-  const handlePlaylistSubmit = async (value: PlayListInfo) => {
+  const handlePlaylistSubmit = async (value: PlaylistInfo) => {
     if (!value.title.trim()) return;
+
     try {
       const client = await getClient();
-      const {data} = await client.post('playlist/create', {
+      const {data} = await client.post('/playlist/create', {
         resId: selectedAudio?.id,
         title: value.title,
         visibility: value.private ? 'private' : 'public',
@@ -67,12 +66,11 @@ const Home: FC<Props> = props => {
       console.log(data);
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(updateNotification({message: errorMessage, type: 'error'}));
+      console.log(errorMessage);
     }
   };
 
-  // Updating playlist
-  const updatePlayList = async (item: Playlist) => {
+  const updatePlaylist = async (item: Playlist) => {
     try {
       const client = await getClient();
       const {data} = await client.patch('/playlist', {
@@ -81,19 +79,20 @@ const Home: FC<Props> = props => {
         title: item.title,
         visibility: item.visibility,
       });
-      setselectedAudio(undefined);
+
+      setSelectedAudio(undefined);
       setShowPlaylistModal(false);
       dispatch(
-        updateNotification({message: 'New audio added.', type: 'success'}),
+        upldateNotification({message: 'New audio added.', type: 'success'}),
       );
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(updateNotification({message: errorMessage, type: 'error'}));
+      console.log(errorMessage);
     }
   };
-  
+
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <LatestUploads
         onAudioPress={item => {
           console.log(item);
@@ -106,9 +105,11 @@ const Home: FC<Props> = props => {
         }}
         onAudioLongPress={handleOnLongPress}
       />
-      <OptionsModel
+      <OptionsModal
         visible={showOptions}
-        onRequestClose={() => setshowOptions(false)}
+        onRequestClose={() => {
+          setShowOptions(false);
+        }}
         options={[
           {
             title: 'Add to playlist',
@@ -123,18 +124,18 @@ const Home: FC<Props> = props => {
         ]}
         renderItem={item => {
           return (
-            <Pressable onPress={item.onPress} style={styles.optionsContainer}>
-              <MaterialComIcom
+            <Pressable onPress={item.onPress} style={styles.optionContainer}>
+              <MaterialComIcon
+                size={24}
                 color={colors.PRIMARY}
                 name={item.icon}
-                size={24}
               />
-              <Text style={styles.optionsLabel}>{item.title}</Text>
+              <Text style={styles.optionLabel}>{item.title}</Text>
             </Pressable>
           );
         }}
       />
-      <PlaylistModal
+      <PlayListModal
         visible={showPlaylistModal}
         onRequestClose={() => {
           setShowPlaylistModal(false);
@@ -142,18 +143,19 @@ const Home: FC<Props> = props => {
         list={data || []}
         onCreateNewPress={() => {
           setShowPlaylistModal(false);
-          setshowPlaylistForm(true);
+          setShowPlaylistForm(true);
         }}
-        onPlayListPress={updatePlayList}
+        onPlaylistPress={updatePlaylist}
       />
+
       <PlaylistForm
         visible={showPlaylistForm}
         onRequestClose={() => {
-          setshowPlaylistForm(false);
+          setShowPlaylistForm(false);
         }}
         onSubmit={handlePlaylistSubmit}
       />
-    </ScrollView>
+    </View>
   );
 };
 
@@ -161,16 +163,12 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
   },
-  optionsContainer: {
+  optionContainer: {
     flexDirection: 'row',
-    paddingVertical: 10,
     alignItems: 'center',
+    paddingVertical: 10,
   },
-  optionsLabel: {
-    color: colors.PRIMARY,
-    fontSize: 16,
-    marginLeft: 5,
-  },
+  optionLabel: {color: colors.PRIMARY, fontSize: 16, marginLeft: 5},
 });
 
 export default Home;

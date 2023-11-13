@@ -1,5 +1,5 @@
 import colors from '@utils/colors';
-import React, {FC, ReactNode} from 'react';
+import {FC, ReactNode} from 'react';
 import {View, StyleSheet, Modal, Pressable} from 'react-native';
 
 interface Props {
@@ -8,11 +8,15 @@ interface Props {
   children: ReactNode;
 }
 
-const BasicModel: FC<Props> = ({visible, onRequestClose, children}) => {
+const BasicModalContainer: FC<Props> = ({
+  visible,
+  children,
+  onRequestClose,
+}) => {
   return (
     <Modal onRequestClose={onRequestClose} visible={visible} transparent>
-      <View style={styles.modelContainer}>
-        <Pressable onPress={onRequestClose} style={styles.backDrop} />
+      <View style={styles.modalContainer}>
+        <Pressable onPress={onRequestClose} style={styles.backdrop} />
         <View style={styles.modal}>{children}</View>
       </View>
     </Modal>
@@ -20,26 +24,25 @@ const BasicModel: FC<Props> = ({visible, onRequestClose, children}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
-  backDrop: {
+  backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.INACTIVE_CONSTRAST,
+    backgroundColor: colors.INACTIVE_CONTRAST,
     zIndex: -1,
   },
-  modelContainer: {
+  modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparet',
+    zIndex: 1,
   },
   modal: {
     width: '90%',
     maxHeight: '50%',
     borderRadius: 10,
     padding: 10,
-    backgroundColor: colors.CONSTRAST,
-    zIndex: 1,
+    backgroundColor: colors.CONTRAST,
   },
 });
 
-export default BasicModel;
+export default BasicModalContainer;

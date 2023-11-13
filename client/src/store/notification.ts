@@ -1,5 +1,5 @@
 import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from 'src/store';
+import {RootState} from '.';
 
 type notificationType = 'error' | 'success';
 
@@ -17,7 +17,7 @@ const slice = createSlice({
   name: 'notification',
   initialState,
   reducers: {
-    updateNotification(
+    upldateNotification(
       notificationState,
       {payload}: PayloadAction<Notification>,
     ) {
@@ -29,9 +29,9 @@ const slice = createSlice({
 
 export const getNotificationState = createSelector(
   (state: RootState) => state.notification,
-  notficationState => notficationState,
+  notificationState => notificationState,
 );
 
-export const {updateNotification} = slice.actions;
+export const {upldateNotification} = slice.actions;
 
 export default slice.reducer;

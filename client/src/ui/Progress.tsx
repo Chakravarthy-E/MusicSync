@@ -1,5 +1,5 @@
 import colors from '@utils/colors';
-import React, {FC} from 'react';
+import {FC} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 
 interface Props {
@@ -16,15 +16,14 @@ const Progress: FC<Props> = ({progress}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
   title: {
-    color: colors.CONSTRAST,
+    color: colors.CONTRAST,
     paddingVertical: 2,
     alignSelf: 'flex-end',
   },
   progressBar: {
     height: 10,
-    backgroundColor: colors.CONSTRAST,
+    backgroundColor: colors.CONTRAST,
     borderRadius: 5,
   },
 });
