@@ -1,5 +1,5 @@
 import colors from '@utils/colors';
-import React, {FC} from 'react';
+import {FC} from 'react';
 import Icon from 'react-native-vector-icons/Entypo';
 
 interface Props {
@@ -8,9 +8,9 @@ interface Props {
 
 const PasswordVisibilityIcon: FC<Props> = ({privateIcon}) => {
   return privateIcon ? (
-    <Icon name="eye" color={colors.SECONDARY} size={18} />
+    <Icon name="eye" color={colors.SECONDARY} size={16} />
   ) : (
-    <Icon name="eye-with-line" color={colors.SECONDARY} size={18} />
+    <Icon name="eye-with-line" color={colors.SECONDARY} size={16} />
   );
 };
 

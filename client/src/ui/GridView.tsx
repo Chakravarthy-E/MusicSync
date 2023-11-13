@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import {FC} from 'react';
 import {View, StyleSheet} from 'react-native';
 
 interface Props<T> {
@@ -8,12 +8,12 @@ interface Props<T> {
 }
 
 const GridView = <T extends any>(props: Props<T>) => {
-  const {data, renderItem, col = 2} = props;
+  const {data, col = 2, renderItem} = props;
   return (
     <View style={styles.container}>
       {data.map((item, index) => {
         return (
-          <View key={index} style={{width: String(100 / col) + '%'}}>
+          <View key={index} style={{width: 100 / col + '%'}}>
             <View style={{padding: 5}}>{renderItem(item)}</View>
           </View>
         );

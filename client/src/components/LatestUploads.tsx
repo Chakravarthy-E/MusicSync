@@ -1,10 +1,10 @@
-import React, {FC} from 'react';
-import {View, StyleSheet, Text, ScrollView} from 'react-native';
-import {useFetchLatestAudios} from 'src/hooks/query';
+import AudioCard from '@ui/AudioCard';
 import PulseAnimationContainer from '@ui/PulseAnimationContainer';
 import colors from '@utils/colors';
-import AudioCard from '@ui/AudioCard';
+import {FC} from 'react';
+import {View, StyleSheet, Text, ScrollView} from 'react-native';
 import {AudioData} from 'src/@types/audio';
+import {useFetchLatestAudios} from 'src/hooks/query';
 
 interface Props {
   onAudioPress(item: AudioData, data: AudioData[]): void;
@@ -13,7 +13,7 @@ interface Props {
 
 const dummyData = new Array(4).fill('');
 
-const LatestUploads: FC<Props> = ({onAudioPress, onAudioLongPress}) => {
+const LatestUploads: FC<Props> = ({onAudioLongPress, onAudioPress}) => {
   const {data, isLoading} = useFetchLatestAudios();
 
   if (isLoading)
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   title: {
-    color: colors.SECONDARY,
+    color: colors.CONTRAST,
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 15,
@@ -63,16 +63,16 @@ const styles = StyleSheet.create({
   dummyTitleView: {
     height: 20,
     width: 150,
-    backgroundColor: colors.INACTIVE_CONSTRAST,
+    backgroundColor: colors.INACTIVE_CONTRAST,
     marginBottom: 15,
     borderRadius: 5,
   },
   dummyAudioView: {
     height: 100,
     width: 100,
-    backgroundColor: colors.INACTIVE_CONSTRAST,
-    borderRadius: 5,
+    backgroundColor: colors.INACTIVE_CONTRAST,
     marginRight: 15,
+    borderRadius: 5,
   },
   dummyAudioContainer: {
     flexDirection: 'row',

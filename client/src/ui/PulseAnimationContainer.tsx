@@ -1,4 +1,4 @@
-import React, {FC, ReactNode, useEffect} from 'react';
+import {FC, ReactNode, useEffect} from 'react';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -12,11 +12,13 @@ interface Props {
 
 const PulseAnimationContainer: FC<Props> = ({children}) => {
   const oppacitySharedValue = useSharedValue(1);
+
   const oppacity = useAnimatedStyle(() => {
     return {
       opacity: oppacitySharedValue.value,
     };
   });
+
   useEffect(() => {
     oppacitySharedValue.value = withRepeat(
       withTiming(0.3, {duration: 1000}),

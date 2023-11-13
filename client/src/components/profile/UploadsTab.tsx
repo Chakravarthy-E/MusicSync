@@ -2,11 +2,11 @@ import AudioListItem from '@ui/AudioListItem';
 import AudioListLoadingUI from '@ui/AudioListLoadingUI';
 import EmptyRecords from '@ui/EmptyRecords';
 import colors from '@utils/colors';
-import React, {FC} from 'react';
+import {FC} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
+  Text,
   Pressable,
   Image,
   ScrollView,
@@ -15,12 +15,12 @@ import {useFetchUploadsByProfile} from 'src/hooks/query';
 
 interface Props {}
 
-const UploadTab: FC<Props> = props => {
+const UploadsTab: FC<Props> = props => {
   const {data, isLoading} = useFetchUploadsByProfile();
 
   if (isLoading) return <AudioListLoadingUI />;
 
-  if (!data?.length) return <EmptyRecords title="There is no audio" />;
+  if (!data?.length) return <EmptyRecords title="There is no audio!" />;
 
   return (
     <ScrollView style={styles.container}>
@@ -32,9 +32,7 @@ const UploadTab: FC<Props> = props => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
+  container: {},
 });
 
-export default UploadTab;
+export default UploadsTab;

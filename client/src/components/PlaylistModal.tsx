@@ -1,7 +1,7 @@
-import BasicModel from '@ui/BasicModel';
+import BasicModalContainer from '@ui/BasicModalContainer';
 import colors from '@utils/colors';
-import React, {FC, ReactNode} from 'react';
-import {View, StyleSheet, ScrollView, Pressable, Text} from 'react-native';
+import {FC, ReactNode} from 'react';
+import {View, StyleSheet, ScrollView, Text, Pressable} from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Playlist} from 'src/@types/audio';
@@ -11,7 +11,7 @@ interface Props {
   onRequestClose(): void;
   list: Playlist[];
   onCreateNewPress(): void;
-  onPlayListPress(item: Playlist): void;
+  onPlaylistPress(item: Playlist): void;
 }
 
 interface ListItemProps {
@@ -29,22 +29,22 @@ const ListItem: FC<ListItemProps> = ({title, icon, onPress}) => {
   );
 };
 
-const PlaylistModal: FC<Props> = ({
-  visible,
-  onRequestClose,
+const PlayListModal: FC<Props> = ({
   list,
+  visible,
   onCreateNewPress,
-  onPlayListPress,
+  onRequestClose,
+  onPlaylistPress,
 }) => {
   return (
-    <BasicModel visible={visible} onRequestClose={onRequestClose}>
+    <BasicModalContainer visible={visible} onRequestClose={onRequestClose}>
+      {/* we want to render playlists */}
       <ScrollView>
         {list.map(item => {
           return (
             <ListItem
-              onPress={() => onPlayListPress(item)}
+              onPress={() => onPlaylistPress(item)}
               key={item.id}
-              title={item.title}
               icon={
                 <FontAwesomeIcon
                   size={20}
@@ -52,17 +52,19 @@ const PlaylistModal: FC<Props> = ({
                   color={colors.PRIMARY}
                 />
               }
+              title={item.title}
             />
           );
         })}
       </ScrollView>
 
+      {/* create playlist (new) button */}
       <ListItem
+        icon={<AntDesign size={20} name="plus" color={colors.PRIMARY} />}
         title="Create New"
-        icon={<AntDesign name="plus" color={colors.PRIMARY} size={20} />}
         onPress={onCreateNewPress}
       />
-    </BasicModel>
+    </BasicModalContainer>
   );
 };
 
@@ -72,4 +74,4 @@ const styles = StyleSheet.create({
   listItemTitle: {fontSize: 16, color: colors.PRIMARY, marginLeft: 5},
 });
 
-export default PlaylistModal;
+export default PlayListModal;

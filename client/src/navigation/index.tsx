@@ -1,19 +1,19 @@
-import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
-import React, {FC, useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import AuthNavigator from './AuthNavigator';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
+import Loader from '@ui/Loader';
+import {getFromAsyncStorage, Keys} from '@utils/asyncStorage';
+import colors from '@utils/colors';
+import {FC, useEffect} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import client from 'src/api/client';
 import {
   getAuthState,
   updateBusyState,
   updateLoggedInState,
   updateProfile,
 } from 'src/store/auth';
+import AuthNavigator from './AuthNavigator';
 import TabNavigator from './TabNavigator';
-import {Keys, getFromAsyncStorage} from '@utils/asyncStorage';
-import client from 'src/api/client';
-import {View} from 'react-native';
-import Loader from '@ui/Loader';
-import colors from '@utils/colors';
 
 interface Props {}
 
@@ -22,13 +22,12 @@ const AppTheme = {
   colors: {
     ...DefaultTheme.colors,
     background: colors.PRIMARY,
-    primary: colors.CONSTRAST,
+    primary: colors.CONTRAST,
   },
 };
 
 const AppNavigator: FC<Props> = props => {
   const {loggedIn, busy} = useSelector(getAuthState);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,7 +35,6 @@ const AppNavigator: FC<Props> = props => {
       dispatch(updateBusyState(true));
       try {
         const token = await getFromAsyncStorage(Keys.AUTH_TOKEN);
-
         if (!token) {
           return dispatch(updateBusyState(false));
         }
@@ -50,23 +48,21 @@ const AppNavigator: FC<Props> = props => {
         dispatch(updateProfile(data.profile));
         dispatch(updateLoggedInState(true));
       } catch (error) {
-        console.log(error);
+        console.log('Auth error: ', error);
       }
 
       dispatch(updateBusyState(false));
     };
+
     fetchAuthInfo();
   }, []);
+
   return (
     <NavigationContainer theme={AppTheme}>
       {busy ? (
         <View
           style={{
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
+            ...StyleSheet.absoluteFillObject,
             backgroundColor: colors.OVERLAY,
             justifyContent: 'center',
             alignItems: 'center',

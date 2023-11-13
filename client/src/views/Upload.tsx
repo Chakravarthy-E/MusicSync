@@ -1,28 +1,27 @@
 import CategorySelector from '@components/CategorySelector';
 import FileSelector from '@components/FileSelector';
 import AppButton from '@ui/AppButton';
+import Progress from '@ui/Progress';
+import {getFromAsyncStorage, Keys} from '@utils/asyncStorage';
 import {categories} from '@utils/categories';
 import colors from '@utils/colors';
-import {getClient} from 'src/api/client';
-import React, {FC, useState} from 'react';
-import {types} from 'react-native-document-picker';
-import {DocumentPickerResponse} from 'react-native-document-picker';
+import {mapRange} from '@utils/math';
+import {FC, useState} from 'react';
 import {
   View,
   StyleSheet,
-  TextInput,
-  ScrollView,
   Text,
   Pressable,
+  TextInput,
+  ScrollView,
 } from 'react-native';
+import {DocumentPickerResponse, types} from 'react-native-document-picker';
 import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import * as yup from 'yup';
-import {getFromAsyncStorage, Keys} from '@utils/asyncStorage';
-import Progress from '@ui/Progress';
-import {mapRange} from '@utils/math';
-import catchAsyncError from 'src/api/catchError';
-import {updateNotification} from 'src/store/notification';
 import {useDispatch} from 'react-redux';
+import catchAsyncError from 'src/api/catchError';
+import {getClient} from 'src/api/client';
+import {upldateNotification} from 'src/store/notification';
+import * as yup from 'yup';
 
 interface FormFields {
   title: string;
@@ -41,14 +40,14 @@ const defaultForm: FormFields = {
 };
 
 const audioInfoSchema = yup.object().shape({
-  title: yup.string().trim().required('Title is missing'),
+  title: yup.string().trim().required('Title is missing!'),
   category: yup.string().oneOf(categories, 'Category is missing!'),
-  about: yup.string().trim().required('About is missing'),
+  about: yup.string().trim().required('About is missing!'),
   file: yup.object().shape({
-    uri: yup.string().required('Audio file is missing'),
-    name: yup.string().required('Audio file is missing'),
-    type: yup.string().required('Audio file is missing'),
-    size: yup.number().required('Audio file is missing'),
+    uri: yup.string().required('Audio file is missing!'),
+    name: yup.string().required('Audio file is missing!'),
+    type: yup.string().required('Audio file is missing!'),
+    size: yup.number().required('Audio file is missing!'),
   }),
   poster: yup.object().shape({
     uri: yup.string(),
@@ -61,15 +60,16 @@ const audioInfoSchema = yup.object().shape({
 interface Props {}
 
 const Upload: FC<Props> = props => {
-  const [showCategoryModel, setshowCategoryModel] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [audioInfo, setAudioInfo] = useState({...defaultForm});
   const [uploadProgress, setUploadProgress] = useState(0);
   const [busy, setBusy] = useState(false);
+
   const dispatch = useDispatch();
 
   const handleUpload = async () => {
+    setBusy(true);
     try {
-      setBusy(true);
       const finalData = await audioInfoSchema.validate(audioInfo);
 
       const formData = new FormData();
@@ -82,6 +82,7 @@ const Upload: FC<Props> = props => {
         type: finalData.file.type,
         uri: finalData.file.uri,
       });
+
       if (finalData.poster.uri)
         formData.append('poster', {
           name: finalData.poster.name,
@@ -113,20 +114,20 @@ const Upload: FC<Props> = props => {
       console.log(data);
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(updateNotification({message: errorMessage, type: 'error'}));
+      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
     }
     setBusy(false);
   };
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.fileSelectorContainer}>
+      <View style={styles.fileSelctorContainer}>
         <FileSelector
           icon={
             <MaterialComIcon
               name="image-outline"
-              color={colors.SECONDARY}
               size={35}
+              color={colors.SECONDARY}
             />
           }
           btnTitle="Select Poster"
@@ -139,22 +140,23 @@ const Upload: FC<Props> = props => {
           icon={
             <MaterialComIcon
               name="file-music-outline"
-              color={colors.SECONDARY}
               size={35}
+              color={colors.SECONDARY}
             />
           }
           btnTitle="Select Audio"
-          style={{marginLeft: 30}}
+          style={{marginLeft: 20}}
           options={{type: [types.audio]}}
           onSelect={file => {
             setAudioInfo({...audioInfo, file});
           }}
         />
       </View>
+
       <View style={styles.formContainer}>
         <TextInput
+          placeholderTextColor={colors.INACTIVE_CONTRAST}
           placeholder="Title"
-          placeholderTextColor={colors.INACTIVE_CONSTRAST}
           style={styles.input}
           onChangeText={text => {
             setAudioInfo({...audioInfo, title: text});
@@ -164,14 +166,15 @@ const Upload: FC<Props> = props => {
 
         <Pressable
           onPress={() => {
-            setshowCategoryModel(true);
+            setShowCategoryModal(true);
           }}
           style={styles.categorySelector}>
           <Text style={styles.categorySelectorTitle}>Category</Text>
           <Text style={styles.selectedCategory}>{audioInfo.category}</Text>
         </Pressable>
+
         <TextInput
-          placeholderTextColor={colors.INACTIVE_CONSTRAST}
+          placeholderTextColor={colors.INACTIVE_CONTRAST}
           placeholder="About"
           style={styles.input}
           numberOfLines={10}
@@ -181,10 +184,11 @@ const Upload: FC<Props> = props => {
           }}
           value={audioInfo.about}
         />
+
         <CategorySelector
-          visible={showCategoryModel}
+          visible={showCategoryModal}
           onRequestClose={() => {
-            setshowCategoryModel(false);
+            setShowCategoryModal(false);
           }}
           title="Category"
           data={categories}
@@ -195,12 +199,14 @@ const Upload: FC<Props> = props => {
             setAudioInfo({...audioInfo, category: item});
           }}
         />
+
         <View style={{marginVertical: 20}}>
           {busy ? <Progress progress={uploadProgress} /> : null}
         </View>
+
         <AppButton
           busy={busy}
-          borderRaduis={7}
+          borderRadius={7}
           title="Submit"
           onPress={handleUpload}
         />
@@ -213,7 +219,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
   },
-  fileSelectorContainer: {
+  fileSelctorContainer: {
     flexDirection: 'row',
   },
   formContainer: {
@@ -225,7 +231,7 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     padding: 10,
     fontSize: 18,
-    color: colors.CONSTRAST,
+    color: colors.CONTRAST,
     textAlignVertical: 'top',
   },
   category: {
@@ -238,7 +244,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   categorySelectorTitle: {
-    color: colors.CONSTRAST,
+    color: colors.CONTRAST,
   },
   selectedCategory: {
     color: colors.SECONDARY,

@@ -1,20 +1,21 @@
 import colors from '@utils/colors';
-import React, {FC} from 'react';
+import {FC} from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import EnrypoIcon from 'react-native-vector-icons/Entypo';
 
 interface Props {
-  source: string | undefined;
+  source?: string;
 }
 
 const avatarSize = 70;
+
 const AvatarField: FC<Props> = ({source}) => {
   return (
     <View>
       {source ? (
-        <Image source={{uri: source}} style={styles.avatarImg} />
+        <Image source={{uri: source}} style={styles.avatarImage} />
       ) : (
-        <View style={styles.avatarImg}>
+        <View style={styles.avatarImage}>
           <EnrypoIcon name="mic" size={30} color={colors.PRIMARY} />
         </View>
       )}
@@ -23,7 +24,7 @@ const AvatarField: FC<Props> = ({source}) => {
 };
 
 const styles = StyleSheet.create({
-  avatarImg: {
+  avatarImage: {
     width: avatarSize,
     height: avatarSize,
     borderRadius: avatarSize / 2,
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 4,
-    borderColor: colors.CONSTRAST,
+    borderColor: colors.CONTRAST,
   },
 });
 

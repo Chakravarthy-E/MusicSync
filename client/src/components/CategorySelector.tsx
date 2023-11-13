@@ -1,15 +1,15 @@
+import BasicModalContainer from '@ui/BasicModalContainer';
 import colors from '@utils/colors';
-import React, {useState} from 'react';
-import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useState} from 'react';
 import {
+  View,
   StyleSheet,
   Modal,
   Pressable,
-  View,
   Text,
   ScrollView,
 } from 'react-native';
-import BasicModel from '@ui/BasicModel';
+import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface Props<T> {
   data: T[];
@@ -22,8 +22,8 @@ interface Props<T> {
 
 const CategorySelector = <T extends any>({
   data,
-  visible = false,
   title,
+  visible = false,
   renderItem,
   onSelect,
   onRequestClose,
@@ -37,15 +37,16 @@ const CategorySelector = <T extends any>({
   };
 
   return (
-    <BasicModel visible={visible} onRequestClose={onRequestClose}>
+    <BasicModalContainer visible={visible} onRequestClose={onRequestClose}>
       <Text style={styles.title}>{title}</Text>
+
       <ScrollView>
         {data.map((item, index) => {
           return (
             <Pressable
               onPress={() => handleSelect(item, index)}
               key={index}
-              style={styles.selecterContainer}>
+              style={styles.selectorContainer}>
               {selectedIndex === index ? (
                 <MaterialComIcon
                   name="radiobox-marked"
@@ -62,19 +63,18 @@ const CategorySelector = <T extends any>({
           );
         })}
       </ScrollView>
-    </BasicModel>
+    </BasicModalContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
   title: {
     fontSize: 18,
     fontWeight: '700',
     color: colors.PRIMARY,
     paddingVertical: 10,
   },
-  selecterContainer: {
+  selectorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },

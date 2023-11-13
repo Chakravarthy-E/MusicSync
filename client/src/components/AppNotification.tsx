@@ -1,19 +1,21 @@
 import colors from '@utils/colors';
 import React, {FC, useEffect} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
 import {useDispatch, useSelector} from 'react-redux';
-import {getNotificationState, updateNotification} from 'src/store/notification';
+import {
+  getNotificationState,
+  upldateNotification,
+} from 'src/store/notification';
 
 interface Props {}
 
 const AppNotification: FC<Props> = props => {
   const {message, type} = useSelector(getNotificationState);
-
   const height = useSharedValue(0);
 
   const dispatch = useDispatch();
@@ -25,12 +27,12 @@ const AppNotification: FC<Props> = props => {
   });
 
   let backgroundColor = colors.ERROR;
-  let textColor = colors.CONSTRAST;
+  let textColor = colors.CONTRAST;
 
   switch (type) {
     case 'success':
-      backgroundColor = colors.SECONDARY;
-      textColor = colors.CONSTRAST;
+      backgroundColor = colors.SUCCESS;
+      textColor = colors.PRIMARY;
       break;
   }
 
@@ -45,7 +47,8 @@ const AppNotification: FC<Props> = props => {
         height.value = withTiming(0, {
           duration: 150,
         });
-        dispatch(updateNotification({message: '', type}));
+
+        dispatch(upldateNotification({message: '', type}));
       }, 3000);
     };
 

@@ -1,5 +1,5 @@
-import BasicModel from '@ui/BasicModel';
-import React, {FC} from 'react';
+import BasicModalContainer from '@ui/BasicModalContainer';
+import {FC} from 'react';
 import {View, StyleSheet} from 'react-native';
 
 interface Props<T> {
@@ -9,18 +9,18 @@ interface Props<T> {
   renderItem(item: T): JSX.Element;
 }
 
-const OptionsModel = <T extends any>({
+const OptionsModal = <T extends any>({
   visible,
-  onRequestClose,
   options,
+  onRequestClose,
   renderItem,
 }: Props<T>) => {
   return (
-    <BasicModel visible={visible} onRequestClose={onRequestClose}>
+    <BasicModalContainer visible={visible} onRequestClose={onRequestClose}>
       {options.map((item, index) => {
         return <View key={index}>{renderItem(item)}</View>;
       })}
-    </BasicModel>
+    </BasicModalContainer>
   );
 };
 
@@ -28,4 +28,4 @@ const styles = StyleSheet.create({
   container: {},
 });
 
-export default OptionsModel;
+export default OptionsModal;

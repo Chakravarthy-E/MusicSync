@@ -1,38 +1,38 @@
-import React, {FC, useState} from 'react';
-import * as yup from 'yup';
-import {useDispatch} from 'react-redux';
-import {useNavigation, NavigationProp} from '@react-navigation/native';
-import {View, StyleSheet} from 'react-native';
 import AuthInputField from '@components/form/AuthInputField';
 import Form from '@components/form';
+import {FC, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
+import * as yup from 'yup';
 import SubmitBtn from '@components/form/SubmitBtn';
 import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
 import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
 import {FormikHelpers} from 'formik';
 import client from 'src/api/client';
 import {updateLoggedInState, updateProfile} from 'src/store/auth';
+import {useDispatch} from 'react-redux';
 import {Keys, saveToAsyncStorage} from '@utils/asyncStorage';
 import catchAsyncError from 'src/api/catchError';
-import {updateNotification} from 'src/store/notification';
+import {upldateNotification} from 'src/store/notification';
 
-const signupSchema = yup.object({
+const signinSchema = yup.object({
   email: yup
     .string()
-    .trim('Name is missing')
-    .email('Invalid email')
-    .required('Email is required'),
+    .trim('Email is missing!')
+    .email('Invalid email!')
+    .required('Email is required!'),
   password: yup
     .string()
-    .trim('Password is missing')
-    .min(8, 'Password is too short')
-    .required('Password is required'),
+    .trim('Password is missing!')
+    .min(8, 'Password is too short!')
+    .required('Password is required!'),
 });
 
 interface Props {}
 
-interface SignUserInfo {
+interface SignInUserInfo {
   email: string;
   password: string;
 }
@@ -45,7 +45,6 @@ const initialValues = {
 const SignIn: FC<Props> = props => {
   const [secureEntry, setSecureEntry] = useState(true);
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
-
   const dispatch = useDispatch();
 
   const togglePasswordView = () => {
@@ -53,11 +52,12 @@ const SignIn: FC<Props> = props => {
   };
 
   const handleSubmit = async (
-    values: SignUserInfo,
-    actions: FormikHelpers<SignUserInfo>,
+    values: SignInUserInfo,
+    actions: FormikHelpers<SignInUserInfo>,
   ) => {
     actions.setSubmitting(true);
     try {
+      // we want to send these information to our api
       const {data} = await client.post('/auth/sign-in', {
         ...values,
       });
@@ -68,8 +68,9 @@ const SignIn: FC<Props> = props => {
       dispatch(updateLoggedInState(true));
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(updateNotification({message: errorMessage, type: 'error'}));
+      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
     }
+
     actions.setSubmitting(false);
   };
 
@@ -77,8 +78,8 @@ const SignIn: FC<Props> = props => {
     <Form
       onSubmit={handleSubmit}
       initialValues={initialValues}
-      validationSchema={signupSchema}>
-      <AuthFormContainer heading="Welcome back !" subHeading="">
+      validationSchema={signinSchema}>
+      <AuthFormContainer heading="Welcome back!">
         <View style={styles.formContainer}>
           <AuthInputField
             name="email"
@@ -102,9 +103,9 @@ const SignIn: FC<Props> = props => {
 
           <View style={styles.linkContainer}>
             <AppLink
-              title="Forgetten Password"
+              title="I Lost My Password"
               onPress={() => {
-                navigation.navigate('ForgettenPassword');
+                navigation.navigate('LostPassword');
               }}
             />
             <AppLink
