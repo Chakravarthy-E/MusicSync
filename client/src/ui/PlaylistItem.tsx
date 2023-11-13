@@ -18,7 +18,7 @@ const PlaylistItem: FC<Props> = ({playlist, onPress}) => {
         <MaterialComIcon
           name="playlist-music"
           size={30}
-          color={colors.CONTRAST}
+          color={colors.SECONDARY}
         />
       </View>
       <View style={styles.contentContainer}>
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: 'row',
     paddingTop: 4,
+    alignItems: 'center',
   },
 });
 
