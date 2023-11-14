@@ -1,26 +1,53 @@
-import {FC} from 'react';
+import {FC, useState, useEffect} from 'react';
+import ImagePicker from 'react-native-image-crop-picker';
+('react-native-image-crop-picker');
 import AppHeader from '@components/AppHeader';
 import AvatarField from '@ui/AvatarField';
 import colors from '@utils/colors';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {View, StyleSheet, Text, Pressable, TextInput} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  TextInput,
+  PermissionsAndroid,
+} from 'react-native';
 import AppButton from '@ui/AppButton';
 import {getClient} from 'src/api/client';
 import catchAsyncError from 'src/api/catchError';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {upldateNotification} from 'src/store/notification';
 import {Keys, removeFromAsyncStorage} from '@utils/asyncStorage';
 import {
   updateProfile,
   updateLoggedInState,
   updateBusyState,
+  getAuthState,
 } from 'src/store/auth';
+import deepEqual from 'deep-equal';
+import {getPermissionToReadImages} from '@utils/helper';
+import ReverificationLink from '@components/ReverificationLink';
 
 interface Props {}
+interface ProfileInfo {
+  name: string;
+  avatar?: string;
+}
 
 const ProfileSettings: FC<Props> = props => {
+  const [userInfo, setUserInfo] = useState<ProfileInfo>({
+    name: '',
+  });
+  const [busy, setBusy] = useState(false);
   const dispatch = useDispatch();
+  const {profile} = useSelector(getAuthState);
+
+  const isSame = deepEqual(userInfo, {
+    name: profile?.name,
+    avatar: profile?.avatar,
+  });
 
   const handleLogout = async (fromAll?: boolean) => {
     dispatch(updateBusyState(true));
@@ -39,6 +66,58 @@ const ProfileSettings: FC<Props> = props => {
     }
     dispatch(updateBusyState(false));
   };
+
+  const handleSubmit = async () => {
+    setBusy(true);
+    try {
+      if (!userInfo.name.trim())
+        return dispatch(
+          upldateNotification({
+            message: 'Profile name is required',
+            type: 'error',
+          }),
+        );
+      const formData = new FormData();
+      formData.append('name', userInfo.name);
+
+      if (userInfo.avatar) {
+        formData.append('avatar', {
+          name: 'avatar',
+          type: 'image/jpeg',
+          uri: userInfo.avatar,
+        });
+      }
+
+      const client = await getClient({'Content-Type': 'multipart/form-data;'});
+      const {data} = await client.post('/auth/update-profile', formData);
+
+      dispatch(updateProfile(data.profile));
+      dispatch(
+        upldateNotification({message: 'Profile updated', type: 'success'}),
+      );
+    } catch (error) {
+      const errorMessage = catchAsyncError(error);
+      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+    }
+    setBusy(false);
+  };
+
+  const handleImageSelect = async () => {
+    try {
+      await getPermissionToReadImages();
+      const {path} = await ImagePicker.openPicker({
+        cropping: true,
+        width: 300,
+        height: 300,
+      });
+      setUserInfo({...userInfo, avatar: path});
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    if (profile) setUserInfo({name: profile.name, avatar: profile.avatar});
+  }, [profile]);
   return (
     <View style={styles.container}>
       <AppHeader title="Settings" />
@@ -48,15 +127,23 @@ const ProfileSettings: FC<Props> = props => {
 
       <View style={styles.settingOptionsContainer}>
         <View style={styles.avatarContainer}>
-          <AvatarField />
-          <Pressable style={styles.paddingLeft}>
+          <AvatarField source={userInfo.avatar} />
+          <Pressable onPress={handleImageSelect} style={styles.paddingLeft}>
             <Text style={styles.linkText}>Update Profile Image</Text>
           </Pressable>
         </View>
-        <TextInput style={styles.nameInput} value={'Ram'} />
+        <TextInput
+          onChangeText={text => setUserInfo({...userInfo, name: text})}
+          style={styles.nameInput}
+          value={userInfo.name}
+        />
         <View style={styles.emailContainer}>
-          <Text style={styles.email}>ram@gmail.com</Text>
-          <MaterialIcon name="verified" size={15} color={colors.SECONDARY} />
+          <Text style={styles.email}>{profile?.email}</Text>
+          {profile?.verified ? (
+            <MaterialIcon name="verified" size={15} color={colors.SECONDARY} />
+          ) : (
+            <ReverificationLink linkTitle="verify" activeAtFirst />
+          )}
         </View>
       </View>
 
@@ -73,9 +160,16 @@ const ProfileSettings: FC<Props> = props => {
           <Text style={styles.logOutBtnTitle}>Logout</Text>
         </Pressable>
       </View>
-      <View style={styles.marginTop}>
-        <AppButton title="Update" borderRadius={7} />
-      </View>
+      {!isSame ? (
+        <View style={styles.marginTop}>
+          <AppButton
+            title="Update"
+            borderRadius={7}
+            onPress={handleSubmit}
+            busy={busy}
+          />
+        </View>
+      ) : null}
     </View>
   );
 };
