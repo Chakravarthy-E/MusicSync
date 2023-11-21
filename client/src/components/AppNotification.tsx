@@ -7,10 +7,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  getNotificationState,
-  upldateNotification,
-} from 'src/store/notification';
+import {getNotificationState, updateNotification} from 'src/store/notification';
 
 interface Props {}
 
@@ -48,7 +45,7 @@ const AppNotification: FC<Props> = props => {
           duration: 150,
         });
 
-        dispatch(upldateNotification({message: '', type}));
+        dispatch(updateNotification({message: '', type}));
       }, 3000);
     };
 

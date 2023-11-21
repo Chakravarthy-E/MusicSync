@@ -20,7 +20,7 @@ import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
 import catchAsyncError from 'src/api/catchError';
 import {getClient} from 'src/api/client';
-import {upldateNotification} from 'src/store/notification';
+import {updateNotification} from 'src/store/notification';
 import * as yup from 'yup';
 
 interface FormFields {
@@ -114,7 +114,7 @@ const Upload: FC<Props> = props => {
       console.log(data);
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     }
     setBusy(false);
   };
