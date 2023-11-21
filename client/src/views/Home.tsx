@@ -4,9 +4,8 @@ import PlaylistForm, {PlaylistInfo} from '@components/PlaylistForm';
 import PlayListModal from '@components/PlaylistModal';
 import RecommendedAudios from '@components/RecommendedAudios';
 import colors from '@utils/colors';
-import {FC, useState} from 'react';
+import {FC, useState, useEffect} from 'react';
 import {View, StyleSheet, Pressable, Text} from 'react-native';
-import {useEvent} from 'react-native-reanimated';
 import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
 import TrackPlayer, {Track} from 'react-native-track-player';
@@ -14,7 +13,7 @@ import {AudioData, Playlist} from 'src/@types/audio';
 import catchAsyncError from 'src/api/catchError';
 import {getClient} from 'src/api/client';
 import {useFetchPlaylist} from 'src/hooks/query';
-import {upldateNotification} from 'src/store/notification';
+import {updateNotification} from 'src/store/notification';
 import useAudioController from 'src/hooks/useAudioController';
 
 interface Props {}
@@ -39,10 +38,10 @@ const Home: FC<Props> = props => {
       const client = await getClient();
 
       const {data} = await client.post('/favorite?audioId=' + selectedAudio.id);
-      dispatch(upldateNotification({message: 'Audio added', type: 'success'}));
+      dispatch(updateNotification({message: 'Audio added', type: 'success'}));
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     }
 
     setSelectedAudio(undefined);
@@ -70,11 +69,11 @@ const Home: FC<Props> = props => {
         visibility: value.private ? 'private' : 'public',
       });
       dispatch(
-        upldateNotification({message: 'Playlist Created', type: 'success'}),
+        updateNotification({message: 'Playlist Created', type: 'success'}),
       );
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     }
   };
 
@@ -91,15 +90,15 @@ const Home: FC<Props> = props => {
       setSelectedAudio(undefined);
       setShowPlaylistModal(false);
       dispatch(
-        upldateNotification({message: 'New audio added.', type: 'success'}),
+        updateNotification({message: 'New audio added.', type: 'success'}),
       );
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     }
   };
 
-  useEvent(() => {
+  useEffect(() => {
     const setupPlayer = async () => {
       await TrackPlayer.setupPlayer();
     };

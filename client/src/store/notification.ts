@@ -17,7 +17,7 @@ const slice = createSlice({
   name: 'notification',
   initialState,
   reducers: {
-    upldateNotification(
+    updateNotification(
       notificationState,
       {payload}: PayloadAction<Notification>,
     ) {
@@ -32,6 +32,6 @@ export const getNotificationState = createSelector(
   notificationState => notificationState,
 );
 
-export const {upldateNotification} = slice.actions;
+export const {updateNotification} = slice.actions;
 
 export default slice.reducer;
