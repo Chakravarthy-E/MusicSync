@@ -18,7 +18,7 @@ import AppButton from '@ui/AppButton';
 import {getClient} from 'src/api/client';
 import catchAsyncError from 'src/api/catchError';
 import {useDispatch, useSelector} from 'react-redux';
-import {upldateNotification} from 'src/store/notification';
+import {updateNotification} from 'src/store/notification';
 import {Keys, removeFromAsyncStorage} from '@utils/asyncStorage';
 import {
   updateProfile,
@@ -62,7 +62,7 @@ const ProfileSettings: FC<Props> = props => {
       dispatch(updateLoggedInState(false));
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     }
     dispatch(updateBusyState(false));
   };
@@ -72,7 +72,7 @@ const ProfileSettings: FC<Props> = props => {
     try {
       if (!userInfo.name.trim())
         return dispatch(
-          upldateNotification({
+          updateNotification({
             message: 'Profile name is required',
             type: 'error',
           }),
@@ -93,11 +93,11 @@ const ProfileSettings: FC<Props> = props => {
 
       dispatch(updateProfile(data.profile));
       dispatch(
-        upldateNotification({message: 'Profile updated', type: 'success'}),
+        updateNotification({message: 'Profile updated', type: 'success'}),
       );
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     }
     setBusy(false);
   };

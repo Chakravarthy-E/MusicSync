@@ -13,7 +13,7 @@ import client from 'src/api/client';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import colors from '@utils/colors';
 import catchAsyncError from 'src/api/catchError';
-import {upldateNotification} from 'src/store/notification';
+import {updateNotification} from 'src/store/notification';
 import {useDispatch} from 'react-redux';
 import ReverificationLink from '@components/ReverificationLink';
 
@@ -72,7 +72,7 @@ const Verification: FC<Props> = ({route}) => {
   const handleSubmit = async () => {
     if (!isValidOtp)
       return dispatch(
-        upldateNotification({message: 'Invalid OTP!', type: 'error'}),
+        updateNotification({message: 'Invalid OTP!', type: 'error'}),
       );
     setSubmitting(true);
     try {
@@ -80,7 +80,7 @@ const Verification: FC<Props> = ({route}) => {
         userId: userInfo.id,
         token: otp.join(''),
       });
-      dispatch(upldateNotification({message: data.message, type: 'success'}));
+      dispatch(updateNotification({message: data.message, type: 'success'}));
 
       const {routeNames} = navigation.getState();
       if (routeNames.includes('SignIn')) {
@@ -92,7 +92,7 @@ const Verification: FC<Props> = ({route}) => {
       // navigate back to sign in
     } catch (error) {
       const errorMessage = catchAsyncError(error);
-      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     }
     setSubmitting(false);
   };

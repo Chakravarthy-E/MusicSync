@@ -4,7 +4,7 @@ import {useDispatch} from 'react-redux';
 import {AudioData} from 'src/@types/audio';
 import catchAsyncError from 'src/api/catchError';
 import {getClient} from 'src/api/client';
-import {upldateNotification} from 'src/store/notification';
+import {updateNotification} from 'src/store/notification';
 import {Playlist} from 'src/@types/audio';
 
 const fetchLatest = async (): Promise<AudioData[]> => {
@@ -19,7 +19,7 @@ export const useFetchLatestAudios = () => {
     queryFn: () => fetchLatest(),
     onError(err) {
       const errorMessage = catchAsyncError(err);
-      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     },
   });
 };
@@ -36,7 +36,7 @@ export const useFetchRecommendedAudios = () => {
     queryFn: () => fetchRecommended(),
     onError(err) {
       const errorMessage = catchAsyncError(err);
-      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     },
   });
 };
@@ -53,7 +53,7 @@ export const useFetchPlaylist = () => {
     queryFn: () => fetchPlaylist(),
     onError(err) {
       const errorMessage = catchAsyncError(err);
-      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     },
   });
 };
@@ -70,7 +70,7 @@ export const useFetchUploadsByProfile = () => {
     queryFn: () => fetchUploadsByProfile(),
     onError(err) {
       const errorMessage = catchAsyncError(err);
-      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     },
   });
 };
@@ -87,7 +87,7 @@ export const useFetchFavorite = () => {
     queryFn: () => fetchFavorites(),
     onError(err) {
       const errorMessage = catchAsyncError(err);
-      dispatch(upldateNotification({message: errorMessage, type: 'error'}));
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     },
   });
 };
