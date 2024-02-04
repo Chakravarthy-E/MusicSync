@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800;900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -30,4 +32,8 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.logo {
+  @apply font-Alegreya text-3xl font-bold tracking-wide;
 }
