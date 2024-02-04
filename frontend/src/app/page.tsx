@@ -1,3 +1,9 @@
+import Header from "@/components/molecules/header/Header";
+
 export default function Home() {
-  return <main>hello</main>;
+  return (
+    <main className="">
+      <Header />
+    </main>
+  );
 }
