@@ -3,7 +3,12 @@ export const saveToLocalStorage = (key: string, value: string) => {
 };
 
 export const getFromLocalStorage = (key: string) => {
-  return localStorage.getItem(key);
+  try {
+    return localStorage.getItem(key);
+  } catch (error) {
+    console.error("Error accessing localStorage:", error);
+    return null;
+  }
 };
 
 export const removeFromLocalStorage = (key: string) => {
