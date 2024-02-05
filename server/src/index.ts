@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors"
 import "dotenv/config";
 import "express-async-errors";
 import "./db";
@@ -15,6 +16,7 @@ import { errorHandler } from "./middleware/error";
 const app = express();
 
 // register our middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("src/public"));
