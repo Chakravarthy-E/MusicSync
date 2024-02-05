@@ -1,12 +1,10 @@
 "use client";
-import { ChangeEventHandler, FC, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/atoms/Button/Button";
-import { TextField } from "@/components/atoms/TextField/TextField";
+import { useFormik } from "formik";
 import * as yup from "yup";
+import { TextField } from "@/components/atoms/TextField/TextField";
+import { Button } from "@/components/atoms/Button/Button";
 import client from "@/utils/apiServices";
-
-interface Props {}
 
 const signupSchema = yup.object({
   name: yup
@@ -36,74 +34,94 @@ const initialValues = {
   password: "",
 };
 
-const Signup: FC<Props> = (props) => {
-  const [signUpData, setSignUpData] = useState(initialValues);
+const SignUp = () => {
   const router = useRouter();
-
-  const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    const { name, value } = e.target;
-    setSignUpData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(signUpData);
-    const data = await client.post("/auth/create", {
-      ...signUpData,
-    });
-    try {
-    } catch (error) {}
-  };
+  const formik = useFormik({
+    initialValues,
+    validationSchema: signupSchema,
+    onSubmit: async (values, actions) => {
+      actions.setSubmitting(true);
+      try {
+        const response = await client.post("/auth/create", { ...values });
+        if (response.status === 201) {
+          router.push("/auth/verification");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+      actions.setSubmitting(false);
+    },
+  });
 
   return (
-    <div className="min-h-screen flex items-center justify-center flex-col">
-      <div className="flex  flex-col justify-center space-y-1 space-x-3 font-Montserrat border px-10 py-10 rounded-md h-96">
-        <h1 className="text-xl text-center text-blue-600 font-semibold underline">
+    <div className=" min-h-screen flex items-center justify-center flex-col">
+      <div className="flex flex-col justify-center space-y-3 space-x-3 font-Montserrat border px-10 py-10 rounded-md h-96">
+        <h1 className=" text-3xl text-center text-blue-600 font-semibold  font-Alegreya">
           Sign Up
         </h1>
-        <TextField
-          label="Name"
-          type="text"
-          name="name"
-          inputDynamicClassName=" w-[20rem]"
-          value={signUpData.name}
-          onChange={handleInputChange}
-        />
-        <TextField
-          label="Email"
-          type="text"
-          name="email"
-          inputDynamicClassName=" w-[20rem]"
-          value={signUpData.email}
-          onChange={handleInputChange}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          name="password"
-          inputDynamicClassName=" w-[20rem]"
-          value={signUpData.password}
-          onChange={handleInputChange}
-        />
-        <div className="text-center flex items-center justify-center flex-col space-y-4">
-          <Button variant="icon" buttonText="Submit" onClick={handleSubmit} />
-          <p>
-            Alredy have account?{" "}
-            <button
-              className=" text-blue-500   hover:text-blue-600 text-base hover:underline"
-              onClick={() => router.push("/auth/login")}
-            >
-              Login
-            </button>{" "}
-            here
-          </p>
-        </div>
+        <form onSubmit={formik.handleSubmit}>
+          <TextField
+            name="name"
+            type="text"
+            label="Name"
+            inputDynamicClassName="w-[20rem]"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+          />
+
+          {formik.touched.name && formik.errors.name && (
+            <div className="text-center text-xs text-red-400">
+              {formik.errors.name}
+            </div>
+          )}
+
+          <TextField
+            name="email"
+            type="email"
+            inputDynamicClassName="w-[20rem]"
+            label="Email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+          />
+
+          {formik.touched.email && formik.errors.email && (
+            <div className="text-center text-xs text-red-400">
+              {formik.errors.email}
+            </div>
+          )}
+
+          <TextField
+            name="password"
+            type="password"
+            label="Password"
+            inputDynamicClassName="w-[20rem]"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+          />
+
+          {formik.touched.password && formik.errors.password && (
+            <div className="text-center text-xs text-red-400">
+              {formik.errors.password}
+            </div>
+          )}
+
+          <div className="text-center flex items-center justify-center flex-col space-y-4">
+            <Button variant="icon" buttonText="Submit" type="submit" />
+            <p>
+              Already have an account?{" "}
+              <button
+                className=" text-blue-500   hover:text-blue-600 text-base hover:underline"
+                onClick={() => router.push("/auth/login")}
+              >
+                Login
+              </button>{" "}
+              here
+            </p>
+          </div>
+        </form>
       </div>
     </div>
   );
 };
 
-export default Signup;
+export default SignUp;
