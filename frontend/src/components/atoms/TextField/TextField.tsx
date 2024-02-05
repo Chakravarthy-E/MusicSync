@@ -8,6 +8,7 @@ export interface TextFieldProps {
   value: string | number;
   onChange: (value: any) => void;
   label?: string;
+  error?: string;
 }
 
 export function TextField({
@@ -17,6 +18,7 @@ export function TextField({
   value,
   onChange,
   label,
+  error,
   ...rest
 }: TextFieldProps) {
   const classes = clsx({
@@ -33,8 +35,10 @@ export function TextField({
         type={type || "text"}
         className={classes}
         onChange={onChange}
+        placeholder={error ? error : ""}
         {...rest}
       />
+     
     </div>
   );
 }

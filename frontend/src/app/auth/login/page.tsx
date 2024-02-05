@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { Button } from "@/components/atoms/Button/Button";
 import { TextField } from "@/components/atoms/TextField/TextField";
@@ -37,7 +37,7 @@ const Login: FC<Props> = (props) => {
     email: "",
     password: "",
   });
-
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -50,12 +50,19 @@ const Login: FC<Props> = (props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(loginData);
-    const data = await client.post("/auth/sign-in", {
-      ...loginData,
-    });
+
     try {
-    } catch (error) {}
+      await signinSchema.validate(loginData, { abortEarly: false });
+      console.log("Form data is valid:", loginData);
+      const data = await client.post("/auth/sign-in", loginData);
+    
+    } catch (validationErrors: any) {
+      const errors: Record<string, string> = {};
+      validationErrors.inner.forEach((error: any) => {
+        errors[error.path as string] = error.message;
+      });
+      setErrors(errors);
+    }
   };
 
   return (
@@ -64,36 +71,40 @@ const Login: FC<Props> = (props) => {
         <h1 className=" text-xl text-center text-blue-600 font-semibold underline">
           Login
         </h1>
-        <TextField
-          label="Email"
-          type="text"
-          name="email"
-          inputDynamicClassName="w-[20rem]"
-          value={loginData.email}
-          onChange={handleInputChange}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          name="password"
-          inputDynamicClassName="w-[20rem]"
-          value={loginData.password}
-          onChange={handleInputChange}
-        />
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Email"
+            type="text"
+            name="email"
+            inputDynamicClassName="w-[20rem]"
+            value={loginData.email}
+            onChange={handleInputChange}
+            error={errors.email}
+          />
+          <TextField
+            label="Password"
+            type="password"
+            name="password"
+            inputDynamicClassName="w-[20rem]"
+            value={loginData.password}
+            onChange={handleInputChange}
+            error={errors.password}
+          />
 
-        <div className="text-center flex items-center justify-center flex-col space-y-4">
-          <Button variant="icon" buttonText="Submit" onClick={handleSubmit} />
-          <p>
-            Don't have account?{" "}
-            <button
-              className=" text-blue-500   hover:text-blue-600 text-base hover:underline"
-              onClick={() => router.push("/auth/signup")}
-            >
-              Sign Up
-            </button>{" "}
-            here
-          </p>
-        </div>
+          <div className="text-center flex items-center justify-center flex-col space-y-4">
+            <Button variant="icon" buttonText="Submit" type="submit" />
+            <p>
+              Don't have an account?{" "}
+              <button
+                className=" text-blue-500   hover:text-blue-600 text-base hover:underline"
+                onClick={() => router.push("/auth/signup")}
+              >
+                Sign Up
+              </button>{" "}
+              here
+            </p>
+          </div>
+        </form>
       </div>
     </div>
   );
