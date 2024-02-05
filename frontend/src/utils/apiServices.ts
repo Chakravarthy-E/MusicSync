@@ -1,22 +1,25 @@
-import axios, { AxiosInstance } from "axios";
+import { getFromLocalStorage, Keys } from "./storage";
+import axios, { CreateAxiosDefaults } from "axios";
 
-const baseURL = "http://192.168.1.100:8989";
-
-const axiosInstance: AxiosInstance = axios.create({
-  baseURL,
+const client = axios.create({
+  baseURL: "http://localhost:8989",
 });
 
-export const getClient = (token?: string): AxiosInstance => {
-  if (!token) return axiosInstance;
+const baseURL = "http://localhost:8989";
+
+type headers = CreateAxiosDefaults<any>["headers"];
+
+export const getClient = async (headers?: headers) => {
+  const token = await getFromLocalStorage(Keys.AUTH_TOKEN);
+
+  if (!token) return axios.create({ baseURL });
 
   const defaultHeaders = {
     Authorization: "Bearer " + token,
+    ...headers,
   };
 
-  return axios.create({
-    baseURL,
-    headers: defaultHeaders,
-  });
+  return axios.create({ baseURL, headers: defaultHeaders });
 };
 
-export default axiosInstance;
+export default client;
