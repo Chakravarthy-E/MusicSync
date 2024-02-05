@@ -2,10 +2,10 @@ import { getFromLocalStorage, Keys } from "./storage";
 import axios, { CreateAxiosDefaults } from "axios";
 
 const client = axios.create({
-  baseURL: "http://localhost:8989",
+  baseURL: process.env.NEXT_PUBLIC_BASEURL,
 });
 
-const baseURL = "http://localhost:8989";
+const baseURL = process.env.NEXT_PUBLIC_BASEURL;
 
 type headers = CreateAxiosDefaults<any>["headers"];
 
