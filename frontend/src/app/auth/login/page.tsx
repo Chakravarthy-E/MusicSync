@@ -1,11 +1,11 @@
 "use client";
-
 import { Button } from "@/components/atoms/Button/Button";
 import { TextField } from "@/components/atoms/TextField/TextField";
 import client from "@/utils/apiServices";
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { Keys, saveToLocalStorage } from "@/utils/storage";
 
 const signinSchema = yup.object({
   email: yup
@@ -35,7 +35,9 @@ const Login = () => {
       try {
         const response = await client.post("/auth/sign-in", { ...values });
         if (response.status === 200) {
-          router.push("/");
+          const data = response.data;
+          await saveToLocalStorage(Keys.AUTH_TOKEN, data.token);
+          router.push("/"); 
         }
       } catch (error) {
         console.error("Error:", error);
@@ -45,9 +47,9 @@ const Login = () => {
   });
 
   return (
-    <div className=" min-h-screen flex items-center justify-center flex-col">
+    <div className="min-h-screen flex items-center justify-center flex-col">
       <div className="flex flex-col justify-center space-y-3 space-x-3 font-Montserrat border px-10 py-10 rounded-md h-96">
-        <h1 className=" text-3xl text-center text-blue-600 font-semibold  font-Alegreya">
+        <h1 className="text-3xl text-center text-blue-600 font-semibold font-Alegreya">
           Login
         </h1>
         <form onSubmit={formik.handleSubmit}>
@@ -84,7 +86,7 @@ const Login = () => {
             <p>
               Don't have an account?{" "}
               <button
-                className=" text-blue-500   hover:text-blue-600 text-base hover:underline"
+                className="text-blue-500 hover:text-blue-600 text-base hover:underline"
                 onClick={() => router.push("/auth/signup")}
               >
                 Sign Up

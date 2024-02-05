@@ -5,6 +5,9 @@ import * as yup from "yup";
 import { TextField } from "@/components/atoms/TextField/TextField";
 import { Button } from "@/components/atoms/Button/Button";
 import client from "@/utils/apiServices";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEarDeaf } from "react-icons/fa6";
+import { useState } from "react";
 
 const signupSchema = yup.object({
   name: yup
@@ -35,6 +38,7 @@ const initialValues = {
 };
 
 const SignUp = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const formik = useFormik({
     initialValues,
@@ -68,13 +72,11 @@ const SignUp = () => {
             value={formik.values.name}
             onChange={formik.handleChange}
           />
-
           {formik.touched.name && formik.errors.name && (
             <div className="text-center text-xs text-red-400">
               {formik.errors.name}
             </div>
           )}
-
           <TextField
             name="email"
             type="email"
@@ -83,28 +85,32 @@ const SignUp = () => {
             value={formik.values.email}
             onChange={formik.handleChange}
           />
-
           {formik.touched.email && formik.errors.email && (
             <div className="text-center text-xs text-red-400">
               {formik.errors.email}
             </div>
           )}
 
-          <TextField
-            name="password"
-            type="password"
-            label="Password"
-            inputDynamicClassName="w-[20rem]"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-          />
-
+          <div className=" flex flex-col items-end">
+            <TextField
+              name="password"
+              type={showPassword ? "text" : "password"}
+              label="Password"
+              inputDynamicClassName="w-[20rem] "
+              value={formik.values.password}
+              onChange={formik.handleChange}
+            />
+            <Button
+              variant="bullet"
+              buttonText={showPassword ? <FaEye /> : <FaEyeSlash />}
+              onClick={() => setShowPassword(!showPassword)}
+            />
+          </div>
           {formik.touched.password && formik.errors.password && (
             <div className="text-center text-xs text-red-400">
               {formik.errors.password}
             </div>
           )}
-
           <div className="text-center flex items-center justify-center flex-col space-y-4">
             <Button variant="icon" buttonText="Submit" type="submit" />
             <p>

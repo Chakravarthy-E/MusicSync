@@ -15,7 +15,7 @@ type ButtonSize = "small" | "medium" | "large";
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant: ButtonVariant;
   type?: "submit" | "button" | "reset";
-  buttonText?: string;
+  buttonText?: string | any;
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
   isFullWidthOnMobile?: boolean;
