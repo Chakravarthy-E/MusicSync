@@ -34,11 +34,10 @@ const Login = () => {
       actions.setSubmitting(true);
       try {
         const response = await client.post("/auth/sign-in", { ...values });
-        if (response.status === 200) {
-          const data = response.data;
-          await saveToLocalStorage(Keys.AUTH_TOKEN, data.token);
-          router.push("/"); 
-        }
+        const data = response.data;
+        await saveToLocalStorage(Keys.AUTH_TOKEN, data.token);
+
+        router.push("/");
       } catch (error) {
         console.error("Error:", error);
       }

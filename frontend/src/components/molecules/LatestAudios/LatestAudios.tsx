@@ -10,7 +10,7 @@ interface Audio {
   category: string;
   file: string;
   poster: string;
-  owner: {
+  owner?: {
     name: string;
     id: string;
   };
@@ -41,7 +41,7 @@ const LatestAudios = () => {
 
   return (
     <div>
-      <h1 className="playlistHeader">Latest Audios</h1>
+      <h1 className="playlistHeader text-blue-500">Latest Audios</h1>
       <div className="flex flex-wrap space-x-2  items-center">
         {latestAudios.map((item, index) => (
           <Card
@@ -49,6 +49,7 @@ const LatestAudios = () => {
             title={item.title}
             poster={item.poster}
             file={item.file}
+            owner={item.owner?.name}
           />
         ))}
       </div>
