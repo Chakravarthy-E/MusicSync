@@ -35,5 +35,9 @@ body {
 }
 
 .logo {
-  @apply font-Alegreya text-3xl font-bold tracking-wide;
+  @apply font-Montserrat text-4xl font-bold tracking-wide;
+}
+
+.playlistHeader {
+  @apply font-Alegreya text-2xl font-semibold tracking-wide mb-2 underline uppercase;
 }

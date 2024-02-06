@@ -9,7 +9,7 @@ const LikeButton = () => {
   };
   return (
     <button onClick={handleIsLiked} className={isLiked ? "text-blue-500" : ""}>
-      <FaHeart size={35} />
+      <FaHeart size={25} />
     </button>
   );
 };
