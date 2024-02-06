@@ -39,5 +39,5 @@ body {
 }
 
 .playlistHeader {
-  @apply font-Alegreya text-2xl font-semibold tracking-wide mb-2 underline uppercase;
+  @apply font-Alegreya text-2xl font-semibold tracking-wide mb-2 underline;
 }
