@@ -12,7 +12,7 @@ export default function Home() {
       <main>
         <div className="flex w-full flex-col">
           <p>
-            Get started by editing&nbsp;
+           Hello&nbsp;
             <code>pages/index.tsx</code>
           </p>
         </div>
