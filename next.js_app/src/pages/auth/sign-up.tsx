@@ -15,11 +15,9 @@ export default function SignUp() {
   const handleSignUp = async () => {
     try {
       const response = await client.post("/auth/create", data);
-      console.log(response.data); // Assuming the response contains the data you need
-      // Redirect user to a different page or display a success message
+      console.log(response.data);
     } catch (error) {
       console.error("Error signing up:", error);
-      // Handle error: Display an error message to the user or retry the request
     }
   };
 
