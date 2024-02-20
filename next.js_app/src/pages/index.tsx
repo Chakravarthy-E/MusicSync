@@ -1,6 +1,17 @@
+import { useEffect } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { Layout } from "@/components/layout";
 
 export default function Home() {
+  const router = useRouter();
+  const user = true;
+  useEffect(() => {
+    if (user) {
+      router.push("/auth/sign-in");
+    }
+  }, [user]);
+
   return (
     <>
       <Head>
@@ -9,14 +20,9 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <div className="flex w-full flex-col">
-          <p>
-           Hello&nbsp;
-            <code>pages/index.tsx</code>
-          </p>
-        </div>
-      </main>
+      <Layout>
+        <div>Home</div>
+      </Layout>
     </>
   );
 }
