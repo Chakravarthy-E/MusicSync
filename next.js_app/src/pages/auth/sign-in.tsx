@@ -46,6 +46,10 @@ const SignIn = () => {
       });
     }
   }
+
+const SignIn = () => {
+  const router = useRouter();
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
       <h1 className="my-4 text-3xl font-semibold tracking-wide">
@@ -94,6 +98,7 @@ const SignIn = () => {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
+
       <p>
         Don't have account?&nbsp;
         <span

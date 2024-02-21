@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -57,7 +58,6 @@ const SignUp = () => {
       });
     }
   }
-
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
       <h1 className="my-4 text-3xl font-semibold tracking-wide">
