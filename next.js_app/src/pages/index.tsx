@@ -1,6 +1,12 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const router = useRouter();
+  const user = false;
+  if (!user) {
+    router.push("/auth/sign-in");
+  }
   return (
     <>
       <Head>
@@ -12,7 +18,7 @@ export default function Home() {
       <main>
         <div className="flex w-full flex-col">
           <p>
-           Hello&nbsp;
+            Hello&nbsp;
             <code>pages/index.tsx</code>
           </p>
         </div>
