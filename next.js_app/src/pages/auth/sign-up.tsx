@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import client from "@/utils/apiServices";
+import client, { apiList } from "@/utils/apiServices";
 
 const formSchema = z.object({
   name: z.string().min(3, "Invalid name!"),
@@ -43,7 +43,7 @@ const SignUp = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await client.post("/auth/create", values);
+    const response = await client.post(apiList.createUser, values);
     if (response.status === 201) {
       toast({
         title: "Account created successfully",
