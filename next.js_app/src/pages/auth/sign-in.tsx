@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCookies } from "react-cookie";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import client from "@/utils/apiServices";
+import client, { apiList } from "@/utils/apiServices";
+import constants from "../../constants.json";
 
 const formSchema = z.object({
   email: z.string().email("email required !"),
@@ -22,6 +24,7 @@ const formSchema = z.object({
 });
 
 const SignIn = () => {
+  const [cookies, setCookie] = useCookies();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -32,20 +35,46 @@ const SignIn = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await client.post("/auth/sign-in", values);
-    if (response.status === 200) {
+    try {
+      const response = await client.post(apiList.signIn, values);
+      if (response.status === 200) {
+        setCookie(constants.USERDATA, JSON.stringify(response.data), {
+          path: "/",
+          maxAge: 3000000,
+          sameSite: "strict",
+        });
+        toast({
+          title: "Login Success",
+          description: "Successfully logged in",
+        });
+        router.push("/");
+      } else if (response.status === 403) {
+        const errorMessage = response.data?.error || "Email/Password mismatch!";
+        toast({
+          title: response.statusText,
+          description: errorMessage,
+        });
+      } else {
+        toast({
+          title: response.statusText,
+          description: "An error occurred while logging in",
+        });
+      }
+    } catch (error) {
       toast({
-        title: "login success",
-        description: "successfully logged in",
-      });
-      router.push("/");
-    } else {
-      toast({
-        title: response.statusText,
-        description: "Account loggin failed",
+        title: "Error",
+        description: "email and password mismatched !",
       });
     }
   }
+
+  const user = cookies[constants.USERDATA];
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user]);
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
       <h1 className="my-4 text-3xl font-semibold tracking-wide">

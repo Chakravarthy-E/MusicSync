@@ -1,7 +1,20 @@
+import { use, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useCookies } from "react-cookie";
+import constants from "../constants.json";
 
 export default function Home() {
+  const router = useRouter();
+  const [cookies, setCookie] = useCookies();
+  const user = cookies[constants.USERDATA];
+  useEffect(() => {
+    if (!user) {
+      router.push("/auth/sign-in");
+    } else {
+      router.push("/");
+    }
+  }, [cookies, user]);
 
   return (
     <>
