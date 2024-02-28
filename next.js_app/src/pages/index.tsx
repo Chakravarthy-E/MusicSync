@@ -2,11 +2,12 @@ import { use, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCookies } from "react-cookie";
-import constants from "../constants.json";
+import Layout from "@/components/layout";
+import constants from "../json/constants.json";
 
 export default function Home() {
   const router = useRouter();
-  const [cookies, setCookie] = useCookies();
+  const [cookies] = useCookies();
   const user = cookies[constants.USERDATA];
   useEffect(() => {
     if (!user) {
@@ -25,12 +26,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div className="flex w-full flex-col">
-          <p>
-            Hello&nbsp;
-            <code>pages/index.tsx</code>
-          </p>
-        </div>
+        <Layout>Hello</Layout>
       </main>
     </>
   );
