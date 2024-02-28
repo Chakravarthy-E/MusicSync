@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import client, { apiList } from "@/utils/apiServices";
-import constants from "../../constants.json";
+import constants from "../../json/constants.json";
 
 const formSchema = z.object({
   email: z.string().email("email required !"),
