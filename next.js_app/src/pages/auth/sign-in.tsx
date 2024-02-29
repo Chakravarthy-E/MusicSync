@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,6 @@ const formSchema = z.object({
 });
 
 const SignIn = () => {
-  const [cookies, setCookie] = useCookies();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -38,11 +37,7 @@ const SignIn = () => {
     try {
       const response = await client.post(apiList.signIn, values);
       if (response.status === 200) {
-        setCookie(constants.USERDATA, JSON.stringify(response.data), {
-          path: "/",
-          maxAge: 3000000,
-          sameSite: "strict",
-        });
+        Cookies.set("token", response.data?.token);
         toast({
           title: "Login Success",
           description: "Successfully logged in",
@@ -68,7 +63,7 @@ const SignIn = () => {
     }
   }
 
-  const user = cookies[constants.USERDATA];
+  const user = Cookies.get("token");
   useEffect(() => {
     if (user) {
       router.push("/");

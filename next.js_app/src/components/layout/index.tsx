@@ -4,7 +4,6 @@ import Header from "./Header/Header";
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <main>
-      <Header />
       <article>
         <div>{children}</div>
       </article>
