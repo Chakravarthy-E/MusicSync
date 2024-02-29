@@ -15,6 +15,7 @@ const Header = () => {
     });
     router.push("/auth/sign-in");
   };
+  
   return (
     <div className="flex w-full items-center justify-between border-b px-5 py-3">
       <div
