@@ -1,10 +1,9 @@
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { useCookies } from "react-cookie";
 import Layout from "@/components/layout";
-import constants from "../json/constants.json";
 
 export default function Home() {
   const router = useRouter();
@@ -26,11 +25,10 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <Layout>
-          <div></div>
-        </Layout>
-      </main>
+
+      <Layout>
+        <div>Hello</div>
+      </Layout>
     </>
   );
 }

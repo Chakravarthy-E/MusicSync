@@ -1,4 +1,5 @@
 import React from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { CircleUserRound } from "lucide-react";
@@ -39,4 +40,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default dynamic(() => Promise.resolve(Header), { ssr: false });
