@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
+import { updateLoggedInState, updateProfile } from "@/lib/slices/authSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +18,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import client, { apiList } from "@/utils/apiServices";
-import constants from "../../json/constants.json";
 
 const formSchema = z.object({
   email: z.string().email("email required !"),
@@ -24,6 +25,7 @@ const formSchema = z.object({
 });
 
 const SignIn = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,6 +45,8 @@ const SignIn = () => {
           description: "Successfully logged in",
         });
         router.push("/");
+        dispatch(updateProfile(response.data?.profile));
+        dispatch(updateLoggedInState(true));
       } else if (response.status === 403) {
         const errorMessage = response.data?.error || "Email/Password mismatch!";
         toast({
