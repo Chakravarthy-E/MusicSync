@@ -1,6 +1,7 @@
 import { use, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 import { useCookies } from "react-cookie";
 import Layout from "@/components/layout";
 import constants from "../json/constants.json";
@@ -8,7 +9,7 @@ import constants from "../json/constants.json";
 export default function Home() {
   const router = useRouter();
   const [cookies] = useCookies();
-  const user = cookies[constants.USERDATA];
+  const user = Cookies.get("token");
   useEffect(() => {
     if (!user) {
       router.push("/auth/sign-in");
@@ -26,7 +27,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Layout>Hello</Layout>
+        <Layout>
+          <div></div>
+        </Layout>
       </main>
     </>
   );
