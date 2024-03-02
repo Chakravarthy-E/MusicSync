@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { useCookies } from "react-cookie";
 import Layout from "@/components/layout";
+import LatestAudios from "@/components/molecules/latestAudios/LatestAudios";
 
 export default function Home() {
   const router = useRouter();
@@ -27,7 +28,9 @@ export default function Home() {
       </Head>
 
       <Layout>
-        <div>Hello</div>
+        <div>
+          <LatestAudios />
+        </div>
       </Layout>
     </>
   );
