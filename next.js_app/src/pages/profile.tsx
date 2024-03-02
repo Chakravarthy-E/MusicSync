@@ -71,7 +71,7 @@ const Profile = (props: Props) => {
           <ProfileInfo
             label="Account Verification"
             icon={<BadgeCheck size={35} className="text-blue-400" />}
-            value={profile?.verified === "true" ? "Verified" : "Not Verified"}
+            value={profile?.verified === true ? "Verified" : "Not Verified"}
           />
         </CardContent>
       </Card>
