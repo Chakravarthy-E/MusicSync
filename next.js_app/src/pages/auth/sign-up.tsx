@@ -49,7 +49,10 @@ const SignUp = () => {
         title: "Account created successfully",
         description: "successfully created",
       });
-      router.push("/auth/sign-in");
+      router.push({
+        pathname: "/auth/verification",
+        query: { userInfo: JSON.stringify(response.data.user) },
+      });
     } else {
       toast({
         title: "Error creating account",
