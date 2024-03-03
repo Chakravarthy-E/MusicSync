@@ -34,9 +34,11 @@ const AddSong = ({ open, close }: any) => {
   const [audioInfo, setAudioInfo] = useState<AudioFormFields>({
     ...defaultForm,
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const finalData = await audioInfoSchema.validate(audioInfo);
       const formData = new FormData();
@@ -52,6 +54,7 @@ const AddSong = ({ open, close }: any) => {
       console.log(data);
       setAudioInfo(defaultForm);
       close();
+      setIsLoading(false);
       toast({
         title: "Audio added successfully",
       });
@@ -136,7 +139,9 @@ const AddSong = ({ open, close }: any) => {
               />
             </div>
 
-            <Button type="submit">Upload</Button>
+            <Button type="submit">
+              {isLoading ? "Uploading...." : "Upload"}
+            </Button>
           </form>
         </div>
       )}

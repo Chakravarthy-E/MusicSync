@@ -3,6 +3,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./slices/authSlice";
+import playerReducer from "./slices/playerSlice";
 
 const persistConfig = {
   key: "root",
@@ -10,6 +11,7 @@ const persistConfig = {
 };
 const reducer = combineReducers({
   auth: authReducer,
+  player: playerReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);
