@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { XCircle } from "lucide-react";
 import * as yup from "yup";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
 import { apiList, getClient } from "@/utils/apiServices";
 import { categories } from "@/utils/categories";
 
@@ -28,106 +30,117 @@ const audioInfoSchema = yup.object().shape({
   poster: yup.mixed().nullable(),
 });
 
-const AddSong = () => {
+const AddSong = ({ open, close }: any) => {
   const [audioInfo, setAudioInfo] = useState<AudioFormFields>({
     ...defaultForm,
   });
 
   const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       const finalData = await audioInfoSchema.validate(audioInfo);
       const formData = new FormData();
 
-      // Ensure `finalData.file` is a valid File object before appending
-      if (finalData.file) {
-        formData.append("file", finalData.file as Blob);
-      }
-
-      // Append other data (title, about, category, poster)
       formData.append("title", finalData.title);
       formData.append("about", finalData.about);
-      if (finalData.category) {
-        formData.append("category", finalData.category);
-      }
-      if (finalData.poster) {
-        formData.append("poster", finalData.poster as Blob);
-      }
+      if (finalData.category) formData.append("category", finalData.category);
+      if (finalData.file) formData.append("file", finalData.file as Blob);
+      if (finalData.poster) formData.append("poster", finalData.poster as Blob);
 
       const client = await getClient({ "Content-Type": "multipart/form-data" });
       const { data } = await client.post(apiList.addAudio, formData);
       console.log(data);
-      // Implement your backend logic here (e.g., using fetch or an HTTP library)
-      // to send the form data to your server for processing and upload
-
-      console.log("Song uploaded successfully!", formData);
       setAudioInfo(defaultForm);
+      close();
+      toast({
+        title: "Audio added successfully",
+      });
     } catch (error) {
       console.error("Error:", error);
-      // Handle errors appropriately (e.g., display an error message to the user)
     }
   };
 
   return (
-    <div>
-      <h1>Add Song</h1>
-
-      <form
-        onSubmit={handleUpload}
-        className="my-1 space-y-2 rounded border px-10 py-2"
-      >
-        <label>Title</label>
-        <input
-          value={audioInfo.title}
-          onChange={(e) =>
-            setAudioInfo({ ...audioInfo, title: e.target.value })
-          }
-        />
-        <label>About</label>
-        <input
-          value={audioInfo.about}
-          onChange={(e) =>
-            setAudioInfo({ ...audioInfo, about: e.target.value })
-          }
-        />
-        <div className="flex flex-col space-y-2">
-          <label>Categories</label>
-          <select
-            name="categories"
-            id="categories"
-            className="rounded-lg border py-2.5"
-            value={audioInfo.category}
-            onChange={(e) =>
-              setAudioInfo({ ...audioInfo, category: e.target.value })
-            }
+    <>
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center  justify-center  bg-opacity-60">
+          <form
+            onSubmit={handleUpload}
+            className="my-4 space-y-4 rounded border bg-white px-6 py-3 text-base shadow-md"
           >
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
+            <div className="flex items-center justify-between border-b py-2">
+              <h1 className="text-xl font-semibold">Add Song</h1>
+              <XCircle
+                onClick={() => close()}
+                className="cursor-pointer hover:text-red-500"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-lg font-semibold">Title</label>
+              <input
+                value={audioInfo.title}
+                onChange={(e) =>
+                  setAudioInfo({ ...audioInfo, title: e.target.value })
+                }
+                className="rounded-lg border py-2 px-3 focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-lg font-semibold">About</label>
+              <input
+                value={audioInfo.about}
+                onChange={(e) =>
+                  setAudioInfo({ ...audioInfo, about: e.target.value })
+                }
+                className="rounded-lg border py-2 px-3 focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-lg font-semibold">Category</label>
+              <select
+                name="categories"
+                id="categories"
+                className="rounded-lg border py-2.5 px-3 focus:border-blue-500 focus:outline-none"
+                value={audioInfo.category}
+                onChange={(e) =>
+                  setAudioInfo({ ...audioInfo, category: e.target.value })
+                }
+              >
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col space-y-1">
+              <label className="text-lg font-semibold">Audio File</label>
+              <input
+                type="file"
+                onChange={(e) =>
+                  setAudioInfo({ ...audioInfo, file: e.target.files?.[0] })
+                }
+                className="rounded-lg border py-2 px-3 focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+
+            <div className="flex flex-col space-y-1">
+              <label className="text-lg font-semibold">Poster (Optional)</label>
+              <input
+                type="file"
+                onChange={(e) =>
+                  setAudioInfo({ ...audioInfo, poster: e.target.files?.[0] })
+                }
+                className="rounded-lg border py-2 px-3 focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+
+            <Button type="submit">Upload</Button>
+          </form>
         </div>
-
-        <label>Audio File</label>
-        <input
-          type="file"
-          onChange={(e) =>
-            setAudioInfo({ ...audioInfo, file: e.target.files?.[0] })
-          }
-        />
-        <label>Poster (Optional)</label>
-        <input
-          type="file"
-          onChange={(e) =>
-            setAudioInfo({ ...audioInfo, poster: e.target.files?.[0] })
-          }
-        />
-
-        <Button type="submit">Upload</Button>
-      </form>
-    </div>
+      )}
+    </>
   );
 };
 

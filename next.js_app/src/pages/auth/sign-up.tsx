@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -32,7 +32,7 @@ const formSchema = z.object({
 
 const SignUp = () => {
   const router = useRouter();
-
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,21 +43,27 @@ const SignUp = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await client.post(apiList.createUser, values);
-    if (response.status === 201) {
-      toast({
-        title: "Account created successfully",
-        description: "successfully created",
-      });
-      router.push({
-        pathname: "/auth/verification",
-        query: { userInfo: JSON.stringify(response.data.user) },
-      });
-    } else {
-      toast({
-        title: "Error creating account",
-        description: "Account creation failed",
-      });
+    setIsLoading(true);
+    try {
+      const response = await client.post(apiList.createUser, values);
+      if (response.status === 201) {
+        toast({
+          title: "Account created successfully",
+          description: "successfully created",
+        });
+        router.push({
+          pathname: "/auth/verification",
+          query: { userInfo: JSON.stringify(response.data.user) },
+        });
+        setIsLoading(false);
+      } else {
+        toast({
+          title: "Error creating account",
+          description: "Account creation failed",
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -123,7 +129,9 @@ const SignUp = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit">
+            {isLoading ? "Creating Account..." : "Create"}
+          </Button>
         </form>
       </Form>
       <p>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { updateLoggedInState, updateProfile } from "@/lib/slices/authSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +25,7 @@ const formSchema = z.object({
 });
 
 const SignIn = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -36,6 +37,7 @@ const SignIn = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
     try {
       const response = await client.post(apiList.signIn, values);
       if (response.status === 200) {
@@ -47,6 +49,7 @@ const SignIn = () => {
         router.push("/");
         dispatch(updateProfile(response.data?.profile));
         dispatch(updateLoggedInState(true));
+        setIsLoading(false);
       } else if (response.status === 403) {
         const errorMessage = response.data?.error || "Email/Password mismatch!";
         toast({
@@ -119,7 +122,7 @@ const SignIn = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit">{isLoading ? "Logging in..." : "Login"}</Button>
         </form>
       </Form>
       <p>

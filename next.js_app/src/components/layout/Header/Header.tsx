@@ -9,7 +9,7 @@ const Header = () => {
   const user = Cookies.get("token");
 
   return (
-    <div className="flex w-full items-center justify-between border-b px-5 py-3">
+    <div className="flex w-full items-center  justify-between border-b px-5 py-3">
       <div
         className="cursor-pointer text-3xl font-bold text-primary"
         onClick={() => router.push("/")}
