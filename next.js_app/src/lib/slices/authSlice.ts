@@ -36,11 +36,18 @@ const slice = createSlice({
     updateBusyState(authState, { payload }: PayloadAction<boolean>) {
       authState.busy = payload;
     },
+    clearProfile(authState) {
+      authState.profile = null;
+    },
   },
 });
 
-export const { updateLoggedInState, updateProfile, updateBusyState } =
-  slice.actions;
+export const {
+  updateLoggedInState,
+  updateProfile,
+  updateBusyState,
+  clearProfile,
+} = slice.actions;
 
 export const getAuthState = createSelector(
   (state: RootState) => state,
