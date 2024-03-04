@@ -21,9 +21,14 @@ const LatestAudios = () => {
 
   return (
     <div className="py-3 px-5">
-      <h1 className="py-2 text-xl font-semibold">Latest Audios</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="py-2 text-xl font-semibold">Latest Audios</h1>
+        <p className="cursor-pointer rounded-full border px-3 py-2 text-xs hover:bg-primary hover:text-white">
+          See All
+        </p>
+      </div>
       <div className="grid gap-3 lg:grid-cols-5">
-        {data?.map((item) => (
+        {data?.slice(0, 5).map((item) => (
           <AudioCard
             key={item.id}
             title={item.title}
