@@ -18,7 +18,6 @@ const AudioCard: FC<Props> = ({ title, poster, about, file }: Props) => {
         alt={title}
         className="h-44 w-full rounded-lg object-cover"
       />
-
       <div className="text-center">
         <h3 className="text-lg font-semibold">{title}</h3>
         <p className="text-gray-600">{about}</p>

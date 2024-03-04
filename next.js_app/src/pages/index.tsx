@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { useCookies } from "react-cookie";
 import Layout from "@/components/layout";
+import RecommendedAudios from "@/components/molecules/RecommendedAudios/RecommendedAudios";
 import LatestAudios from "@/components/molecules/latestAudios/LatestAudios";
 
 export default function Home() {
@@ -28,8 +29,9 @@ export default function Home() {
       </Head>
 
       <Layout>
-        <div>
+        <div className="space-y-3">
           <LatestAudios />
+          <RecommendedAudios />
         </div>
       </Layout>
     </>
