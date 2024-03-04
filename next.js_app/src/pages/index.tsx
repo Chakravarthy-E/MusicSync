@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { useCookies } from "react-cookie";
 import Layout from "@/components/layout";
 import RecommendedAudios from "@/components/molecules/RecommendedAudios/RecommendedAudios";
+import TrendingAudio from "@/components/molecules/TrendingAudio/TrendingAudio";
 import LatestAudios from "@/components/molecules/latestAudios/LatestAudios";
 
 export default function Home() {
@@ -30,6 +31,7 @@ export default function Home() {
 
       <Layout>
         <div className="space-y-3">
+          <TrendingAudio />
           <LatestAudios />
           <RecommendedAudios />
         </div>
