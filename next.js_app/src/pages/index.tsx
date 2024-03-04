@@ -31,7 +31,9 @@ export default function Home() {
 
       <Layout>
         <div className="space-y-3">
+
           <TrendingAudio />
+
           <LatestAudios />
           <RecommendedAudios />
         </div>

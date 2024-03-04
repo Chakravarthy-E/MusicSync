@@ -23,6 +23,7 @@ const RecommendedAudios = (props: Props) => {
 
   return (
     <div className="py-3 px-5">
+
       <div className="flex items-center justify-between">
         <h1 className="py-2 text-xl font-semibold">Recommended Audios</h1>
         <p className="cursor-pointer rounded-full border px-3 py-2 text-xs hover:bg-primary hover:text-white">
