@@ -4,7 +4,7 @@ import { apiList, getClient } from "@/utils/apiServices";
 
 const fetchLatest = async (): Promise<AudioData[]> => {
   const client = await getClient();
-  const { data } = await client(apiList.latestAudios);
+  const { data } = await client.get(apiList.latestAudios);
   return data.audios;
 };
 
@@ -17,7 +17,7 @@ export const useFetchLatestAudios = () => {
 
 const fetchRecommended = async (): Promise<AudioData[]> => {
   const client = await getClient();
-  const { data } = await client(apiList.getRecommendByProfile);
+  const { data } = await client.get(apiList.getRecommendByProfile);
   return data.audios;
 };
 
@@ -30,7 +30,7 @@ export const useFetchRecommendedAudios = () => {
 
 const fetchPlaylist = async (): Promise<Playlist[]> => {
   const client = await getClient();
-  const { data } = await client(apiList.getPlaylistByProfile);
+  const { data } = await client.get(apiList.getPlaylistByProfile);
   return data.playlist;
 };
 
@@ -43,7 +43,7 @@ export const useFetchPlaylist = () => {
 
 const fetchUploadsByProfile = async (): Promise<AudioData[]> => {
   const client = await getClient();
-  const { data } = await client(apiList.getUploads);
+  const { data } = await client.get(apiList.getUploads);
   return data.audios;
 };
 
@@ -56,7 +56,7 @@ export const useFetchUploadsByProfile = () => {
 
 const fetchFavorites = async (): Promise<AudioData[]> => {
   const client = await getClient();
-  const { data } = await client(apiList.getFavorites);
+  const { data } = await client.get(apiList.getFavorites);
   return data.audios;
 };
 
