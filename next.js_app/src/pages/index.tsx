@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
-import { useCookies } from "react-cookie";
 import Layout from "@/components/layout";
 import RecommendedAudios from "@/components/molecules/RecommendedAudios/RecommendedAudios";
 import TrendingAudio from "@/components/molecules/TrendingAudio/TrendingAudio";
@@ -10,7 +9,6 @@ import LatestAudios from "@/components/molecules/latestAudios/LatestAudios";
 
 export default function Home() {
   const router = useRouter();
-  const [cookies] = useCookies();
   const user = Cookies.get("token");
   useEffect(() => {
     if (!user) {
@@ -18,7 +16,7 @@ export default function Home() {
     } else {
       router.push("/");
     }
-  }, [cookies, user]);
+  }, [user]);
 
   return (
     <>
