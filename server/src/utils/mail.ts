@@ -13,6 +13,7 @@ import { generateToken } from "#/utils/helper";
 import { generateTemplate } from "#/mail/templete";
 
 const generateMailTransporter = () => {
+  
   const transport = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 2525,
