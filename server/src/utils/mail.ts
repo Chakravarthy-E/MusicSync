@@ -14,8 +14,9 @@ import { generateTemplate } from "#/mail/templete";
 
 const generateMailTransporter = () => {
   const transport = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
+    host: "smtp.gmail.com",
     port: 2525,
+    service: "gmail",
     auth: {
       user: MAILTRAP_USER,
       pass: MAILTRAP_PASS,
